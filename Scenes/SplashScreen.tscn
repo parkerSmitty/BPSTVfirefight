@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://da8yw286ssycb"]
+
+[ext_resource type="VideoStream" uid="uid://coyuu10u7d0lt" path="res://video/secondtest.ogv" id="1_acvwv"]
+[ext_resource type="Script" uid="uid://b7ghgsf6iqgfr" path="res://Scripts/splash_screen.gd" id="1_lus2m"]
+
+[node name="SplashScreen" type="Node2D"]
+script = ExtResource("1_lus2m")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("1_acvwv")
+autoplay = true
+expand = true
+loop = true
+metadata/_edit_use_anchors_ = true
+
+[node name="Camera2D" type="Camera2D" parent="CanvasLayer"]
+zoom = Vector2(0.6, 0.6)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -137.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 100
+text = "START GAME"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true

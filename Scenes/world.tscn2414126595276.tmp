@@ -1,0 +1,120 @@
+[gd_scene load_steps=13 format=3 uid="uid://6rkdjrito7pv"]
+
+[ext_resource type="Script" uid="uid://cqgoinsbwplp2" path="res://Scripts/world.gd" id="1_fo5ed"]
+[ext_resource type="Texture2D" uid="uid://rpn12jgw0lym" path="res://Textures/cabin.png" id="1_go701"]
+[ext_resource type="Texture2D" uid="uid://cspv8h7ghrgqk" path="res://Textures/RustyMetalPanel01_2K_Roughness.png" id="2_5a7ea"]
+[ext_resource type="PackedScene" uid="uid://l1ceeh6o3xf" path="res://Scenes/player.tscn" id="3_5a7ea"]
+[ext_resource type="PackedScene" uid="uid://bgjtpucrbj3rd" path="res://Scenes/card_game.tscn" id="4_8j60k"]
+[ext_resource type="PackedScene" uid="uid://ctgkokatj7ys8" path="res://Scenes/Raycast_Car.tscn" id="6_5ukr8"]
+[ext_resource type="PackedScene" uid="uid://chtl07o0jpw1l" path="res://Items/pistol_9_mm.tscn" id="8_k7acu"]
+[ext_resource type="PackedScene" uid="uid://bple4gg04xqgo" path="res://Items/AmmoPickup.tscn" id="9_5v1tr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8j60k"]
+albedo_texture = ExtResource("1_go701")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fo5ed"]
+albedo_texture = ExtResource("2_5a7ea")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ukr8"]
+albedo_texture = ExtResource("2_5a7ea")
+emission_enabled = true
+emission = Color(0.278424, 0.521149, 0.901882, 1)
+
+[sub_resource type="Environment" id="Environment_o06y3"]
+background_energy_multiplier = 1.67
+sdfgi_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.217297, 0.609929, 0.676766, 1)
+fog_density = 0.003
+fog_sky_affect = 0.435
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_fo5ed")
+
+[node name="Map" type="Node3D" parent="."]
+
+[node name="floor" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000511646, -0.486873, -0.0015645)
+material_override = SubResource("StandardMaterial3D_8j60k")
+use_collision = true
+collision_mask = 15
+size = Vector3(1000, 1, 1000)
+
+[node name="box" type="CSGBox3D" parent="Map"]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, -5, 0.5, 3)
+material_override = SubResource("StandardMaterial3D_fo5ed")
+use_collision = true
+collision_mask = 15
+
+[node name="box2" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1.73867, 0, -0.465874, 0, 1.8, 0, 0.465874, 0, 1.73867, 1, 0.9, 3)
+material_override = SubResource("StandardMaterial3D_fo5ed")
+use_collision = true
+collision_mask = 15
+
+[node name="box3" type="CSGBox3D" parent="Map"]
+transform = Transform3D(13.1975, -0.141872, 2.70471e-06, 3.53626, 0.529474, 7.24725e-07, -9.04868e-06, 0, 4.22805, 12, -0.1, 9.02892)
+material_override = SubResource("StandardMaterial3D_fo5ed")
+use_collision = true
+collision_mask = 15
+
+[node name="box4" type="CSGBox3D" parent="Map"]
+transform = Transform3D(13.1975, -0.141872, 2.70471e-06, 3.53626, 0.529474, 7.24725e-07, -9.04868e-06, 0, 4.22805, 12, -0.1, -9.28502)
+material_override = SubResource("StandardMaterial3D_fo5ed")
+use_collision = true
+collision_mask = 15
+
+[node name="box6" type="CSGBox3D" parent="Map"]
+transform = Transform3D(13.1975, -0.141872, 2.70471e-06, 3.53626, 0.529474, 7.24725e-07, -9.04868e-06, 0, 4.22805, 31, -0.1, -10.285)
+material_override = SubResource("StandardMaterial3D_fo5ed")
+use_collision = true
+collision_mask = 15
+
+[node name="box5" type="CSGBox3D" parent="Map"]
+transform = Transform3D(0.5, 0, 0, 0, 0.9, 0, 0, 0, 4, 5.47246, 0, -7.7786)
+material_override = SubResource("StandardMaterial3D_fo5ed")
+use_collision = true
+collision_mask = 15
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -2)
+material_override = SubResource("StandardMaterial3D_5ukr8")
+use_collision = true
+collision_mask = 15
+size = Vector3(2, 2, 2)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_o06y3")
+
+[node name="Player" parent="." instance=ExtResource("3_5a7ea")]
+
+[node name="CardGame" parent="." instance=ExtResource("4_8j60k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 0)
+
+[node name="Car" parent="." instance=ExtResource("6_5ukr8")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 4, -8)
+
+[node name="Car2" parent="." instance=ExtResource("6_5ukr8")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, 4, 7)
+
+[node name="Pistol_9mm" parent="." instance=ExtResource("8_k7acu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9493, 3.00244, -0.511966)
+
+[node name="Pistol_9mm2" parent="." instance=ExtResource("8_k7acu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.98889, 0)
+
+[node name="Area3D" parent="." instance=ExtResource("9_5v1tr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.98889, -2.93457)
+ammo_type = "9mm"
+amount = 20
+
+[node name="Area3D2" parent="." instance=ExtResource("9_5v1tr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.46917, 3.98889, -2.93457)
+ammo_type = "45 cal"
+amount = 5
+
+[node name="Area3D3" parent="." instance=ExtResource("9_5v1tr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.46917, 3.98889, 0.406377)
+ammo_type = "45 cal"
+amount = 5

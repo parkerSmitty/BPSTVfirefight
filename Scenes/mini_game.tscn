@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://tpyh2227w8du"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_owj8j"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_18cds"]
+albedo_color = Color(0.0946932, 0.471397, 0.061589, 1)
+roughness_texture = SubResource("NoiseTexture2D_owj8j")
+rim_enabled = true
+
+[node name="MiniGame" type="Node3D"]
+
+[node name="table" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+size = Vector3(30, 1, 30)
+material = SubResource("StandardMaterial3D_18cds")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.177703, 0.984084, 0, -0.984084, 0.177703, 0, 9, 7)

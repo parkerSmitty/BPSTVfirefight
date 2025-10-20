@@ -1,0 +1,109 @@
+[gd_scene load_steps=7 format=3 uid="uid://l1ceeh6o3xf"]
+
+[ext_resource type="Script" uid="uid://bdnhe7ub4767j" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="PackedScene" uid="uid://cxxqu21phsaxt" path="res://Items/inventory_ui.tscn" id="3_6t5aa"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f60y1"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_v0iea"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_v0iea"]
+
+[sub_resource type="GDScript" id="GDScript_cvnsp"]
+script/source = "extends Node
+class_name Inventory
+
+
+#an array of {item: item, amount: int}
+var items: Array = []
+var ammo: Dictionary = {} 
+
+signal inventory_updated
+
+func add_item(item: Item, amount: int = 1):
+	if item == null:
+		push_error(\"tried to add null item to inventory\")
+		if item.stackable:
+			for entry in items:
+				if entry.item.id == item.id:
+					item.amount += amount
+					emit_signal(\"inventory_updated\")
+					return
+	if item == null:
+		push_error(\"tried to add null item to inventory\")
+	elif item != null:
+		var item_instance = item.duplicate()
+		items.append({ \"item\": item_instance, \"amount\": amount})
+		emit_signal(\"inventory_updated\")
+		print(\"inventory_updated\")
+		print(item.name, \" was added to inventory\")
+		print(items)
+		
+
+func add_ammo(type: String, amount: int):
+	ammo[type] = ammo.get(type, 0) + amount
+	print(\"Picked up %d %s ammo. now: %d\" % [amount, type, ammo[type]])
+	print(ammo)
+	
+
+func get_ammount_count(type: String) -> int:
+	return ammo.get(type, 0)
+	
+func remove_ammo(type: String, amount: int):
+	if not ammo.has(type):
+		return
+	ammo[type] = max(ammo[type] - amount, 0)
+
+#CHECK PHOTOS FOR AMMO PICKUP IN THE WORLD AND FOR RELOAD IN PLAYER SCRIPT!!!!!!!
+
+
+	
+
+func remove_item(item_id: String, amount: int = 1):
+	for entry in items:
+		if entry.item.id == item_id:
+			entry.amount -= amount
+			if entry.amount <= 0:
+				items.erase(entry)
+			emit_signal(\"inventory_updated\")
+			return
+
+func get_items() -> Array:
+	return items
+
+
+		
+"
+
+[node name="Player" type="CharacterBody3D"]
+collision_mask = 15
+script = ExtResource("1_v0iea")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_f60y1")
+
+[node name="visuals" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_v0iea")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="visuals"]
+transform = Transform3D(0.154096, 0, 0, 0, 0.154096, 0, 0, 0, 0.154096, 0, 1.6, -0.5)
+mesh = SubResource("BoxMesh_v0iea")
+
+[node name="camera_mount" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="camera_mount" groups=["player"]]
+transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0, 1, 2.7)
+current = true
+
+[node name="InventoryNode" type="Node" parent="."]
+script = SubResource("GDScript_cvnsp")
+
+[node name="hand" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.427479, 1, -0.424091)
+
+[node name="Control" parent="hand" instance=ExtResource("3_6t5aa")]

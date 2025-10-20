@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7ba635vjedqb"]
+
+[ext_resource type="Script" uid="uid://v8nry7j1akbj" path="res://Items/ItemPickup.gd" id="1_lvxe1"]
+[ext_resource type="Resource" uid="uid://cuu2ap1vlo6w3" path="res://Items/pistol_9mm.tres" id="2_urdef"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_iaswh"]
+radius = 0.273948
+
+[node name="ItemPickup" type="RigidBody3D"]
+script = ExtResource("1_lvxe1")
+item_data = ExtResource("2_urdef")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.264166, 0)
+shape = SubResource("SphereShape3D_iaswh")

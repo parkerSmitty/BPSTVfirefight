@@ -1,0 +1,78 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1lydnsdew4ia"]
+
+[ext_resource type="Script" uid="uid://btjxhb3131nlu" path="res://Scripts/main_menu.gd" id="1_28flt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_erv1k"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 45
+corner_radius_top_right = 10
+corner_radius_bottom_right = 35
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.827451)
+shadow_size = 3
+shadow_offset = Vector2(-0.71, 3.555)
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+size_flags_vertical = 8
+script = ExtResource("1_28flt")
+
+[node name="SinglePlayer" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 31.0
+offset_top = -266.0
+offset_right = 323.0
+offset_bottom = -150.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_erv1k")
+text = "SOLO"
+
+[node name="ONLINE" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -488.0
+offset_top = -48.0
+offset_right = -180.0
+offset_bottom = 68.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_erv1k")
+text = "MULTI PLAYA
+"
+
+[node name="OPTIONS" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -390.0
+offset_top = 170.0
+offset_right = -98.0
+offset_bottom = 286.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_erv1k")
+text = "OPTIONS
+"
+
+[connection signal="pressed" from="SinglePlayer" to="." method="_on_single_player_pressed"]
+[connection signal="pressed" from="ONLINE" to="." method="_on_online_pressed"]
+[connection signal="pressed" from="OPTIONS" to="." method="_on_options_pressed"]

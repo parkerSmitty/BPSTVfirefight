@@ -1,0 +1,35 @@
+[gd_scene load_steps=7 format=3 uid="uid://chtl07o0jpw1l"]
+
+[ext_resource type="Script" uid="uid://dhqxa7n2b5cg5" path="res://Items/pistol_9_mm.gd" id="1_lu7ko"]
+[ext_resource type="Resource" uid="uid://cuu2ap1vlo6w3" path="res://Items/pistol_9mm.tres" id="2_01gvh"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_wpgsy"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lu7ko"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_01gvh"]
+size = Vector3(0.325439, 0.971802, 0.326752)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0qqjn"]
+size = Vector3(0.319092, 0.338684, 0.475372)
+
+[node name="Pistol_9mm" type="RigidBody3D"]
+script = ExtResource("1_lu7ko")
+item_data = ExtResource("2_01gvh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, -1.31134e-08, -0.2, 0, 0.3, -8.74228e-09, 0, 0, -0.2)
+mesh = SubResource("CylinderMesh_wpgsy")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 0.7, -1.42109e-14, 0, 0, 2, 0, 0.651358, 1)
+mesh = SubResource("BoxMesh_lu7ko")
+
+[node name="barrel_CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.62, 0, 0, 0, -2.71011e-08, 0.62, 0, -0.62, -2.71011e-08, -7.56797e-05, -0.00197739, -0.201508)
+shape = SubResource("BoxShape3D_01gvh")
+
+[node name="grip_CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.62, 0, 0, 0, -2.71011e-08, 0.62, 0, -0.62, -2.71011e-08, 0.000832528, -0.249736, -0.0054688)
+shape = SubResource("BoxShape3D_0qqjn")
