@@ -15,6 +15,8 @@
 [node name="Player" type="CharacterBody3D"]
 collision_mask = 15
 script = ExtResource("1_v0iea")
+sens_horizontal = 0.001
+sens_vertical = 0.001
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
