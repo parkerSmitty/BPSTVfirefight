@@ -13,7 +13,7 @@ var SPEED = 3.0
 const JUMP_VELOCITY = 4.5
 var walking_speed = 3.0
 var running_speed = 5.0
-var aimed_speed = 1.5
+var aimed_speed = 2.0
 var running := false
 @export var sens_horizontal = 0.0005
 @export var sens_vertical = 0.0005
@@ -53,7 +53,12 @@ var canfire := true
 @export var gunRayLength := 1000.0
 
 #get some sort of check for ammmo later on.
-@onready var point: Node3D = $point
+
+#BULLLLLET DAAAA
+var bullet = load("res://Scenes/bullet.tscn")
+@onready var muzzle: Node3D = $point
+
+
 
 func reload():
 	print("reload")
@@ -61,19 +66,25 @@ func reload():
 var shotcount = 0
 func _firing():
 	canfire = false
-	var start = point.global_transform.origin
-	var direction = -point.global_transform.basis.z.normalized()
+	var start = muzzle.global_transform.origin
+	var direction = -muzzle.global_transform.basis.z.normalized()
 	var end = start + direction * gunRayLength
 	
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(start, end)
 	var result = space_state.intersect_ray(query)
-	
+	#above is for directing the bullet, figure out aiming the bullet where the 3d cam is casting its 
+	#ray using the end of that ray as the end of the bullets target ray 
+	# below is for spawning bullet and gun firerate
+	var instance=bullet.instantiate()
+	instance.global_transform = muzzle.global_transform
+	get_parent().add_child(instance)
 	print("SHOT!")
 	shotcount += 1
 	print(shotcount)
-	await get_tree().create_timer(0.2).timeout
+	await get_tree().create_timer(0.05).timeout
 	canfire = true
+
 func _on_exited_car():
 	print("make the player cam current")
 	$camera_mount/SpringArm3D/Camera3D.make_current()
