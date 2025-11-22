@@ -14,12 +14,13 @@ const JUMP_VELOCITY = 4.5
 var walking_speed = 3.0
 var running_speed = 5.0
 var aimed_speed = 1.5
+var running := false
 @export var sens_horizontal = 0.0005
 @export var sens_vertical = 0.0005
 @export var min_pitch := deg_to_rad(60)
 @export var max_pitch := deg_to_rad(-60)
 
-#aimming
+#aimming and cam stuff
 var lean_right := false
 var lean_left := false
 var run_cam_posR = Vector3(1.0, 0.9,0.0)
@@ -31,7 +32,11 @@ var base_cam_posL = Vector3(-1.0,0.9,-0.7)
 var base_cam_current = base_cam_posR
 var previous_aimed := false
 var previous_leaned := false
-
+#test these out my brotha VVV
+var def_fov := 75.0
+var run_fov := 90.0
+var aim_fov := 60.0
+#test ^^
 
 #gun stuff
 @onready var cam_spring: SpringArm3D = $camera_mount/SpringArm3D
@@ -120,17 +125,7 @@ func _input(event):
 		rot.x = clamp(rot.x, deg_to_rad(-60), deg_to_rad(60))
 		camera_mount.rotation = rot
 		#camera_mount.rotation_degrees.x = clamp(camera_mount.rotation_degrees.x, rad_to_deg(min_pitch),rad_to_deg(max_pitch))
-func unaim():
-	cam_spring.position = base_cam_current
-	print("unaimed")
 
-func aim():
-	if base_cam_current == base_cam_posR:
-		cam_spring.position = aim_cam_posR
-	else:
-		cam_spring.position = aim_cam_posL
-	print("AIMEDDDD!!") #this is called every frame. FIX ITTTTTTTT
-	
 
 #INTERACT FUNCTION
 func cast_ray_from_camera():
@@ -154,6 +149,20 @@ func cast_ray_from_camera():
 		if result.collider.has_method("collect"): #FIX THIS
 			result.collider.collect(self)
 		
+#func unaim():
+#	cam_spring.position = cam_spring.position.lerp(base_cam_current, 0.05) 
+#	print("unaimed")
+#
+#func aim():
+#	if base_cam_current == base_cam_posR:
+#		cam_spring.position = aim_cam_posR
+#		#cam_spring.position = cam_spring.position.lerp(base_cam_current, 0.05)
+#		#cam_spring.position = aim_cam_posR
+#	else:
+#		#cam_spring.position = aim_cam_posL
+#		cam_spring.position = aim_cam_posL
+#	print("AIMEDDDD!!") 
+
 func leanRight():
 	if !aimed:
 		base_cam_current = base_cam_posR
@@ -166,6 +175,16 @@ func leanLeft():
 
 
 func _physics_process(delta: float) -> void:
+	var fov_speed = 6.0
+	var target_fov
+	if aimed:
+		target_fov = aim_fov
+	elif running:
+		target_fov = run_fov
+	else:
+		target_fov = def_fov
+	
+	camera.fov = lerp(camera.fov, target_fov, clamp(delta * fov_speed,0,1))
 	
 	cam_spring.add_excluded_object(self)
 	
@@ -182,28 +201,41 @@ func _physics_process(delta: float) -> void:
 			leanRight()
 			lean_right = previous_leaned
 	
-	if aimed != previous_aimed:
-		if aimed:
-			aim()
+	var target: Vector3
+	if aimed:
+		if base_cam_current == base_cam_posR:
+			target = aim_cam_posR
 		else:
-			unaim()
-		previous_aimed = aimed
+			target = aim_cam_posL
+	else:
+		target = base_cam_current
+	cam_spring.position = cam_spring.position.lerp(target,0.09)
+	
+	
+	#if aimed != previous_aimed:
+	#	if aimed:
+	#		aim()
+	#	else:
+	#		unaim()
+	#	previous_aimed = aimed
 	
 	if canfire and firing:
 		_firing()
 	
 	#adjusts animing speed
 	if Input.is_action_pressed("run") or Input.is_action_just_pressed("ui_accept") and !aimed:
-		SPEED = running_speed 
+		SPEED = running_speed
+		running = true 
 		if !aimed:
 			if base_cam_current == base_cam_posR:
-				cam_spring.position = cam_spring.position.lerp(run_cam_posR, 0.1)
+				cam_spring.position = cam_spring.position.lerp(run_cam_posR, 0.05)
 			else:
-				cam_spring.position = cam_spring.position.lerp(run_cam_posL, 0.1)
+				cam_spring.position = cam_spring.position.lerp(run_cam_posL, 0.05)
 	
 	elif !aimed:
 		SPEED = walking_speed
-		cam_spring.position = cam_spring.position.lerp(base_cam_current, 0.1)
+		running = false
+		cam_spring.position = cam_spring.position.lerp(base_cam_current, 0.05)
 	if aimed:
 		SPEED = aimed_speed
 	# Add the gravity.
@@ -217,9 +249,11 @@ func _physics_process(delta: float) -> void:
 	
 	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	var visual_dir = Vector3(input_dir.x,0, input_dir.y).normalized()
+	var current_rot = visuals.global_rotation
+	var target_y = camera.global_rotation.y
+	current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
+	visuals.global_rotation = current_rot
 	if aimed or firing:
-		var current_rot = visuals.global_rotation
-		var target_y = camera.global_rotation.y
 		current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
 		visuals.global_rotation = current_rot
 	
@@ -227,9 +261,11 @@ func _physics_process(delta: float) -> void:
 		input_dir = input_dir.normalized()
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
-		if !aimed and !firing:
-			visuals.rotation.y = lerp_angle(visuals.rotation.y,atan2(-visual_dir.x, -visual_dir.z), delta * SMOOTH_SPEED)
-		
+		visuals.global_rotation = current_rot
+		#if !aimed and !firing: 
+			#visuals.rotation.y = lerp_angle(visuals.rotation.y,atan2(-visual_dir.x, -visual_dir.z), delta * SMOOTH_SPEED)
+		#change this back to having the character look the direction theyre walking. ^^^^^
+		#perhaps add some smoothing so they flow into direction changes or something idk.
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
