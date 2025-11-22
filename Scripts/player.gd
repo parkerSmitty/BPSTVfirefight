@@ -1,10 +1,11 @@
 extends CharacterBody3D
 @onready var camera_mount: Node3D = $camera_mount
 @onready var visuals = $visuals
-@onready var camera: Camera3D = $camera_mount/Camera3D
+@onready var camera: Camera3D = $camera_mount/SpringArm3D/Camera3D
 #@onready var inventory_node: Inventory = $InventoryNode
 @onready var player_inventory: PlayerInventory = $Node
 var equipped_weapon: Node = null
+@onready var crosshair: Label = $crosshair
 
 const SMOOTH_SPEED = 10.0
 
@@ -15,38 +16,94 @@ var running_speed = 5.0
 var aimed_speed = 1.5
 @export var sens_horizontal = 0.0005
 @export var sens_vertical = 0.0005
+@export var min_pitch := deg_to_rad(60)
+@export var max_pitch := deg_to_rad(-60)
 
+#aimming
+var lean_right := false
+var lean_left := false
+var run_cam_posR = Vector3(1.0, 0.9,0.0)
+var run_cam_posL = Vector3(-1.0, 0.9,0.0)
+var aim_cam_posR = Vector3(0.8, 0.5,-1.7)
+var aim_cam_posL = Vector3(-0.8, 0.5,-1.7)
+var base_cam_posR = Vector3(1.0,0.9,-0.7)
+var base_cam_posL = Vector3(-1.0,0.9,-0.7)
+var base_cam_current = base_cam_posR
+var previous_aimed := false
+var previous_leaned := false
+
+
+#gun stuff
+@onready var cam_spring: SpringArm3D = $camera_mount/SpringArm3D
 var aimed := false
+#maybe implement this 
 @export var grouping := 0.15
 @export var grouping_aimed = 0.05
+#maybe maybe maybe ^^^^
 var firing := false
 @export var fire_rate := 0.10
+var ammo = 400
+var mag = 200
+var canfire := true
+@export var gunRayLength := 1000.0
+
 #get some sort of check for ammmo later on.
+@onready var point: Node3D = $point
 
+func reload():
+	print("reload")
+
+var shotcount = 0
 func _firing():
+	canfire = false
+	var start = point.global_transform.origin
+	var direction = -point.global_transform.basis.z.normalized()
+	var end = start + direction * gunRayLength
 	
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(start, end)
+	var result = space_state.intersect_ray(query)
 	
-	pass
-
-
+	print("SHOT!")
+	shotcount += 1
+	print(shotcount)
+	await get_tree().create_timer(0.2).timeout
+	canfire = true
+func _on_exited_car():
+	print("make the player cam current")
+	$camera_mount/SpringArm3D/Camera3D.make_current()
 
 func _ready():
+	for car in get_parent().get_children():
+		if car is RaycastCar:
+			car.exited_car.connect(_on_exited_car)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group("player")
+	var car = get_node("../Car")
+	car.exited_car.connect(_on_exited_car)
+
 	
 
 func _input(event):
+	if event.is_action_pressed("fire") and canfire:
+		firing = true
+	if event.is_action_released("fire"):
+		firing = false
 	if event.is_action_pressed("aim"):
 		aimed = true
-		print(aimed)
 	if event.is_action_released("aim"):
 		aimed = false
-		print(aimed)
 	if event.is_action_pressed("reload"):
-		if equipped_weapon and equipped_weapon.has_method("reload"):
-			equipped_weapon.reload(player_inventory)
+		pass
+		#set reload to true and call the reload fucntion elswhere 
+		#if equipped_weapon and equipped_weapon.has_method("reload"):
+			#equipped_weapon.reload(player_inventory)
 	if event.is_action_pressed("Interact"):
 		cast_ray_from_camera()
+	if event.is_action_pressed("lean right"):
+		lean_right = true
+	if event.is_action_pressed("lean left"):
+		lean_left = true
 	if Input.is_action_pressed("esc"):
 		get_tree().quit()
 	
@@ -58,6 +115,22 @@ func _input(event):
 		rotate_y(rad_to_deg(-event.relative.x*sens_horizontal /sensmulti))
 		visuals.rotate_y(rad_to_deg(event.relative.x*sens_horizontal/sensmulti))
 		camera_mount.rotate_x(rad_to_deg(-event.relative.y*sens_vertical /sensmulti))
+		
+		var rot = camera_mount.rotation
+		rot.x = clamp(rot.x, deg_to_rad(-60), deg_to_rad(60))
+		camera_mount.rotation = rot
+		#camera_mount.rotation_degrees.x = clamp(camera_mount.rotation_degrees.x, rad_to_deg(min_pitch),rad_to_deg(max_pitch))
+func unaim():
+	cam_spring.position = base_cam_current
+	print("unaimed")
+
+func aim():
+	if base_cam_current == base_cam_posR:
+		cam_spring.position = aim_cam_posR
+	else:
+		cam_spring.position = aim_cam_posL
+	print("AIMEDDDD!!") #this is called every frame. FIX ITTTTTTTT
+	
 
 #INTERACT FUNCTION
 func cast_ray_from_camera():
@@ -81,29 +154,70 @@ func cast_ray_from_camera():
 		if result.collider.has_method("collect"): #FIX THIS
 			result.collider.collect(self)
 		
+func leanRight():
+	if !aimed:
+		base_cam_current = base_cam_posR
+
+
+func leanLeft():
+	if !aimed:
+		base_cam_current = base_cam_posL
+
 
 
 func _physics_process(delta: float) -> void:
 	
+	cam_spring.add_excluded_object(self)
+	
+	if camera.current: # figure this shit out inorder to hide crosshair in car 
+		crosshair.is_visible_in_tree()
+	if !camera.current:
+		pass
+	if lean_left != previous_leaned:
+		if lean_left:
+			leanLeft()
+			lean_left = previous_leaned
+	if lean_right != previous_leaned:
+		if lean_right:
+			leanRight()
+			lean_right = previous_leaned
+	
+	if aimed != previous_aimed:
+		if aimed:
+			aim()
+		else:
+			unaim()
+		previous_aimed = aimed
+	
+	if canfire and firing:
+		_firing()
+	
+	#adjusts animing speed
 	if Input.is_action_pressed("run") or Input.is_action_just_pressed("ui_accept") and !aimed:
 		SPEED = running_speed 
-	else:
+		if !aimed:
+			if base_cam_current == base_cam_posR:
+				cam_spring.position = cam_spring.position.lerp(run_cam_posR, 0.1)
+			else:
+				cam_spring.position = cam_spring.position.lerp(run_cam_posL, 0.1)
+	
+	elif !aimed:
 		SPEED = walking_speed
+		cam_spring.position = cam_spring.position.lerp(base_cam_current, 0.1)
 	if aimed:
 		SPEED = aimed_speed
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor() and !aimed:
 		velocity.y = JUMP_VELOCITY
-		
 	var input_dir := Input.get_vector("left", "right", "forward", "backward")
-
+	
 	
 	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	var visual_dir = Vector3(input_dir.x,0, input_dir.y).normalized()
-	if aimed:
+	if aimed or firing:
 		var current_rot = visuals.global_rotation
 		var target_y = camera.global_rotation.y
 		current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
@@ -113,13 +227,12 @@ func _physics_process(delta: float) -> void:
 		input_dir = input_dir.normalized()
 		velocity.x = direction.x * SPEED
 		velocity.z = direction.z * SPEED
-		if !aimed:
+		if !aimed and !firing:
 			visuals.rotation.y = lerp_angle(visuals.rotation.y,atan2(-visual_dir.x, -visual_dir.z), delta * SMOOTH_SPEED)
 		
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
-
 	move_and_slide()
 
 func get_player_inventory() -> PlayerInventory:

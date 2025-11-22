@@ -1,6 +1,8 @@
 extends RigidBody3D
 class_name RaycastCar
 
+signal exited_car
+
 @export var wheels: Array[RaycastWheel]
 @export var acceleration := 600.0
 @export var max_speed := 20.0
@@ -21,7 +23,7 @@ var interact := false
 var can_enter_car := false
 var can_exit_car := false
 var in_car := false
-
+var room = 2
 @onready var driver_seat: Node3D = $DriverSeat
 @onready var passenger_seat: Node3D = $PassengerSeat
 @onready var driver_side_exit: Node3D = $DriverSideExit
@@ -149,8 +151,9 @@ func _on_body_exited(body):
 
 
 
+
 func entering_car():
-	if interact and can_enter_car and player_ray and not in_car:
+	if interact and can_enter_car and player_ray and !in_car and room > 0:
 		print("interaction") #Input.is_action_just_pressed("Interact") and 
 		camera_3d.make_current()
 		interact = false
@@ -167,11 +170,16 @@ func entering_car():
 		#player_ref.reparent(self)
 		can_exit_car = true
 		in_car = true
-		
+		room -= 1
+		print(room, " < room in car")
+
+
+
 
 
 func exit_car():
 	if interact and can_exit_car and in_car:
+		emit_signal("exited_car")
 		print("car exited")
 		driver = false
 		interact = false
@@ -179,8 +187,6 @@ func exit_car():
 		can_exit_car = false
 		player_ref.set_physics_process(true)
 		player_ref.set_process_input(true)
-		var player_cam = get_node("../Player/camera_mount/Camera3D")
-		player_cam.make_current()
 		print("player layers and masks", player_ref.collision_layer, player_ref.collision_mask)
 		print("car layers and masks", self.collision_layer, self.collision_mask)
 		print("removed collision exception with ", self, player_ref)
@@ -192,9 +198,10 @@ func exit_car():
 		add_child(timer)
 		timer.connect("timeout", Callable(self, "_on_collision_reenable"))
 		timer.start()
-
 		player_ref.global_transform.origin = driver_side_exit.global_transform.origin
 		#player_ref.rotation = 
+		room +=1
+		print(room, " < room in car")
 
 
 func _on_collision_reenable():
