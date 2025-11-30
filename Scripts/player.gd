@@ -55,11 +55,11 @@ var canfire := true
 #get some sort of check for ammmo later on.
 
 #BULLLLLET DAAAA
+@onready var gun: Node3D = $PKMLMG
 @onready var crosshair: Label = $crosshair
 @onready var gun_anim = $PKMLMG/AnimationPlayer
 @onready var gun_muzzle = $PKMLMG/RayCast3D
 @onready var local_muz: Node3D = $local_muz
-
 var BULLET_SCENE = load("res://Scenes/bullet.tscn")
 var instance
 
@@ -70,12 +70,25 @@ func reload():
 
 
 func _firing():
+	#below is a working state, above is a slightly different implementation to reslvoe snaping issue
+	#CURRNTLY THE BULLET IS USED FOR DIRECTION
+	#UPDATE THIS WHEN VISUALS ARE IN TO USE THE GUN TO AIM DIRECTION 
+	#and the BULLET ONLY FLIES IN STRIAGHT LINE WHEREVER GUN IS AIMED.
 	canfire = false
 	if !gun_anim.is_playing():
 		gun_anim.play("shoot")
 	var new_bullet:bullet = BULLET_SCENE.instantiate()
 	get_tree().current_scene.add_child(new_bullet)
-	new_bullet.initialize(local_muz.global_position,-local_muz.global_basis.z,200)
+	#-gun_muzzle.global_basis.z
+	var hit = camera_target()
+	var target_position: Vector3
+	if hit:
+		target_position = hit.position
+	else:
+		target_position = camera.global_position + (-camera.global_transform.basis.z) * 2000.0
+	# Convert target_position → direction vector
+	var direction = target_position - gun_muzzle.global_position
+	new_bullet.initialize(gun_muzzle.global_position, direction, 200)
 	await get_tree().create_timer(0.05).timeout
 	canfire = true
 
@@ -130,8 +143,19 @@ func _input(event):
 		var rot = camera_mount.rotation
 		rot.x = clamp(rot.x, deg_to_rad(-60), deg_to_rad(60))
 		camera_mount.rotation = rot
+		
 		#camera_mount.rotation_degrees.x = clamp(camera_mount.rotation_degrees.x, rad_to_deg(min_pitch),rad_to_deg(max_pitch))
 
+func camera_target():
+	var ray_origin = camera.global_transform.origin
+	var ray_dir = -camera.global_transform.basis.z.normalized()
+	var ray_end = ray_origin + ray_dir * 1000.0
+
+	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+	query.exclude = [self.get_rid()]
+	query.collision_mask = 1
+
+	return get_world_3d().direct_space_state.intersect_ray(query)
 
 #INTERACT FUNCTION
 func cast_ray_from_camera():
@@ -275,8 +299,11 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
+	
+	#GUN ROTATION
+	
+	
 	move_and_slide()
-#nigger
 func get_player_inventory() -> PlayerInventory:
 	return $Node
 #func get_inventory() -> Inventory:

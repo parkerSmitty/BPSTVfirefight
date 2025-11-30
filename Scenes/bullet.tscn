@@ -15,8 +15,8 @@ emission_energy_multiplier = 500.0
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xjght"]
 direction = Vector3(0, 0, 27.47)
 spread = 29.065
-initial_velocity_min = 18.38
-initial_velocity_max = 20.41
+initial_velocity_min = -56.02
+initial_velocity_max = -2.72
 
 [sub_resource type="BoxMesh" id="BoxMesh_ycag2"]
 size = Vector3(0.02, 0.02, 0.02)

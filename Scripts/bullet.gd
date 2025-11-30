@@ -8,6 +8,7 @@ var age: float = 0.0
 var shot_direction: Vector3 = Vector3.ZERO
 @onready var raycast: RayCast3D = $RayCast3D
 @onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var particles: GPUParticles3D = $GPUParticles3D
 
 func _ready() -> void:
 	pass
