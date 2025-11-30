@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://6rkdjrito7pv"]
+[gd_scene load_steps=14 format=3 uid="uid://6rkdjrito7pv"]
 
 [ext_resource type="Script" uid="uid://cqgoinsbwplp2" path="res://Scripts/world.gd" id="1_fo5ed"]
 [ext_resource type="Texture2D" uid="uid://rpn12jgw0lym" path="res://Textures/cabin.png" id="1_go701"]
 [ext_resource type="Texture2D" uid="uid://cspv8h7ghrgqk" path="res://Textures/RustyMetalPanel01_2K_Roughness.png" id="2_5a7ea"]
+[ext_resource type="PackedScene" uid="uid://dqpqks4xmh1gu" path="res://Scenes/bullet.tscn" id="2_5v1tr"]
 [ext_resource type="PackedScene" uid="uid://bgjtpucrbj3rd" path="res://Scenes/card_game.tscn" id="4_8j60k"]
 [ext_resource type="PackedScene" uid="uid://ctgkokatj7ys8" path="res://Scenes/Raycast_Car.tscn" id="6_5ukr8"]
 [ext_resource type="PackedScene" uid="uid://cweae40dah6op" path="res://Scenes/fightEntrance.tscn" id="8_5v1tr"]
@@ -24,6 +25,11 @@ emission = Color(0.278424, 0.521149, 0.901882, 1)
 [sub_resource type="Environment" id="Environment_o06y3"]
 background_energy_multiplier = 1.67
 sdfgi_enabled = true
+glow_enabled = true
+glow_intensity = 0.28
+glow_strength = 0.71
+glow_blend_mode = 1
+glow_hdr_luminance_cap = 256.0
 fog_enabled = true
 fog_light_color = Color(0.217297, 0.609929, 0.676766, 1)
 fog_density = 0.003
@@ -31,6 +37,9 @@ fog_sky_affect = 0.435
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_fo5ed")
+
+[node name="bullet" parent="." instance=ExtResource("2_5v1tr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.80811, 0.502964, 0)
 
 [node name="Map" type="Node3D" parent="."]
 

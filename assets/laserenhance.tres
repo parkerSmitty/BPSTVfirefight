@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cojnw62uriels"]
+
+[sub_resource type="Gradient" id="Gradient_xjght"]
+offsets = PackedFloat32Array(0, 0.650794)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+metadata/_snap_count = 52
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_oduel"]
+gradient = SubResource("Gradient_xjght")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[resource]
+blend_mode = 1
+shading_mode = 0
+diffuse_mode = 1
+specular_mode = 2
+disable_fog = true
+albedo_texture = SubResource("GradientTexture2D_oduel")
+billboard_mode = 1

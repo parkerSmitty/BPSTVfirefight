@@ -5,7 +5,7 @@ extends CharacterBody3D
 #@onready var inventory_node: Inventory = $InventoryNode
 @onready var player_inventory: PlayerInventory = $Node
 var equipped_weapon: Node = null
-@onready var crosshair: Label = $crosshair
+
 
 const SMOOTH_SPEED = 10.0
 
@@ -55,33 +55,27 @@ var canfire := true
 #get some sort of check for ammmo later on.
 
 #BULLLLLET DAAAA
-var bullet = load("res://Scenes/bullet.tscn")
-@onready var muzzle: Node3D = $point
+@onready var crosshair: Label = $crosshair
+@onready var gun_anim = $PKMLMG/AnimationPlayer
+@onready var gun_muzzle = $PKMLMG/RayCast3D
+@onready var local_muz: Node3D = $local_muz
+
+var BULLET_SCENE = load("res://Scenes/bullet.tscn")
+var instance
 
 
 
 func reload():
 	print("reload")
 
-var shotcount = 0
+
 func _firing():
 	canfire = false
-	var start = muzzle.global_transform.origin
-	var direction = -muzzle.global_transform.basis.z.normalized()
-	var end = start + direction * gunRayLength
-	
-	var space_state = get_world_3d().direct_space_state
-	var query = PhysicsRayQueryParameters3D.create(start, end)
-	var result = space_state.intersect_ray(query)
-	#above is for directing the bullet, figure out aiming the bullet where the 3d cam is casting its 
-	#ray using the end of that ray as the end of the bullets target ray 
-	# below is for spawning bullet and gun firerate
-	var instance=bullet.instantiate()
-	instance.global_transform = muzzle.global_transform
-	get_parent().add_child(instance)
-	print("SHOT!")
-	shotcount += 1
-	print(shotcount)
+	if !gun_anim.is_playing():
+		gun_anim.play("shoot")
+	var new_bullet:bullet = BULLET_SCENE.instantiate()
+	get_tree().current_scene.add_child(new_bullet)
+	new_bullet.initialize(local_muz.global_position,-local_muz.global_basis.z,200)
 	await get_tree().create_timer(0.05).timeout
 	canfire = true
 
@@ -90,6 +84,7 @@ func _on_exited_car():
 	$camera_mount/SpringArm3D/Camera3D.make_current()
 
 func _ready():
+	
 	for car in get_parent().get_children():
 		if car is RaycastCar:
 			car.exited_car.connect(_on_exited_car)
@@ -281,7 +276,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 	move_and_slide()
-
+#nigger
 func get_player_inventory() -> PlayerInventory:
 	return $Node
 #func get_inventory() -> Inventory:

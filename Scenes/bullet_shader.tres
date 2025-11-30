@@ -1,0 +1,43 @@
+[gd_resource type="VisualShader" load_steps=3 format=3 uid="uid://dlei85sa7ig81"]
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_0o4vd"]
+output_port_for_preview = 0
+parameter_name = "laser_color"
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_c8013"]
+output_port_for_preview = 0
+parameter_name = "laser_emit"
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx, unshaded, shadows_disabled, ambient_light_disabled;
+
+uniform vec4 laser_color : source_color;
+uniform vec4 laser_emit : source_color;
+
+
+
+void fragment() {
+// ColorParameter:2
+	vec4 n_out2p0 = laser_color;
+
+
+// ColorParameter:3
+	vec4 n_out3p0 = laser_emit;
+
+
+// Output:0
+	ALBEDO = vec3(n_out2p0.xyz);
+	EMISSION = vec3(n_out3p0.xyz);
+
+
+}
+"
+flags/unshaded = true
+flags/shadows_disabled = true
+flags/ambient_light_disabled = true
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_0o4vd")
+nodes/fragment/2/position = Vector2(-140, 200)
+nodes/fragment/3/node = SubResource("VisualShaderNodeColorParameter_c8013")
+nodes/fragment/3/position = Vector2(-140, 400)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0, 3, 0, 0, 5)
