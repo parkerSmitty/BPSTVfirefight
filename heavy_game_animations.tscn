@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://c11qirx0gu6nk"]
+
+[ext_resource type="PackedScene" uid="uid://ve1degoe3x20" path="res://animations/heavy game animations.glb" id="1_vb2uy"]
+
+[node name="heavy game animations" instance=ExtResource("1_vb2uy")]
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/0/position = Vector3(-0.00608682, 1.75692, -0.157687)
+bones/0/rotation = Quaternion(-0.0311148, -0.0778599, -0.00243728, 0.996476)
+bones/1/rotation = Quaternion(0.113628, -0.129716, 0.00680644, 0.984995)
+bones/2/rotation = Quaternion(0.0418058, 0.0293726, 0.0089065, 0.998654)
+bones/3/rotation = Quaternion(0.0257987, 0.160919, -0.0448444, 0.985611)
+bones/4/rotation = Quaternion(0.0471029, -2.54503e-10, 1.16844e-08, 0.99889)
+bones/5/position = Vector3(0.172464, 0.46337, -0.0566971)
+bones/5/rotation = Quaternion(-0.0372209, 0.055384, 0.860058, -0.505814)
+bones/6/rotation = Quaternion(0.397299, -0.101908, -0.490377, 0.768959)
+bones/7/rotation = Quaternion(0.262174, -0.275658, -0.317253, 0.868693)
+bones/8/rotation = Quaternion(0.377701, 0.000734726, 0.0169991, 0.925771)
+bones/9/rotation = Quaternion(0.0141464, -0.000132795, 0.0110608, 0.999839)
+bones/10/position = Vector3(-0.172464, 0.463371, -0.0566973)
+bones/10/rotation = Quaternion(0.0380832, -0.0964818, 0.839604, 0.533203)
+bones/11/rotation = Quaternion(0.0300625, 0.113356, 0.244842, 0.962444)
+bones/12/rotation = Quaternion(0.745382, -0.189648, 0.197992, 0.607651)
+bones/13/rotation = Quaternion(0.375321, -0.000778585, -0.0169973, 0.926739)
+bones/14/rotation = Quaternion(0.0115771, 0.00010426, -0.0110613, 0.999872)
+bones/15/rotation = Quaternion(0.592159, 0.0361252, -0.79419, 0.131548)
+bones/16/rotation = Quaternion(0.145791, 0.00214905, -0.240327, 0.959679)
+bones/17/rotation = Quaternion(-0.113586, -0.0263177, 0.724096, 0.679772)
+bones/18/rotation = Quaternion(0.722842, -0.0679349, 0.680128, 0.101538)
+bones/19/rotation = Quaternion(0.102651, 0.244648, 0.236588, 0.934685)
+bones/20/rotation = Quaternion(-0.0065761, -0.0244546, -0.752715, 0.657859)
