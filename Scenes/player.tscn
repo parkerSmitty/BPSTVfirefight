@@ -1,15 +1,50 @@
-[gd_scene load_steps=11 format=3 uid="uid://l1ceeh6o3xf"]
+[gd_scene load_steps=18 format=3 uid="uid://l1ceeh6o3xf"]
 
 [ext_resource type="Script" uid="uid://bdnhe7ub4767j" path="res://Scripts/player.gd" id="1_v0iea"]
-[ext_resource type="PackedScene" uid="uid://dr0v1o50pvlvu" path="res://animations/game animations.glb" id="2_6t5aa"]
 [ext_resource type="Script" uid="uid://wmc3jchvr21c" path="res://Scenes/PlayerInventory.gd" id="3_vgqql"]
 [ext_resource type="PackedScene" uid="uid://j6nrv7pd07x7" path="res://Scenes/pkmlmg.tscn" id="4_vgqql"]
+[ext_resource type="PackedScene" uid="uid://ve1degoe3x20" path="res://animations/heavy game animations.glb" id="5_fkybt"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f60y1"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_v0iea"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_v0iea"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vgqql"]
+animation = &"heavy_walk"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fkybt"]
+animation = &"heavy_walk_left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x3wgy"]
+animation = &"heavy_walk_right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3smsa"]
+animation = &"heavy_walk"
+play_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8erm5"]
+animation = &"heavy_idle"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_f1ek2"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_vgqql")
+blend_point_0/pos = Vector2(0, -1)
+blend_point_1/node = SubResource("AnimationNodeAnimation_fkybt")
+blend_point_1/pos = Vector2(1, 0)
+blend_point_2/node = SubResource("AnimationNodeAnimation_x3wgy")
+blend_point_2/pos = Vector2(-1, 0)
+blend_point_3/node = SubResource("AnimationNodeAnimation_3smsa")
+blend_point_3/pos = Vector2(0, 1)
+blend_point_4/node = SubResource("AnimationNodeAnimation_8erm5")
+blend_point_4/pos = Vector2(0, 0)
+sync = true
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_tx1dd"]
+graph_offset = Vector2(-405, 74)
+nodes/BlendSpace2D/node = SubResource("AnimationNodeBlendSpace2D_f1ek2")
+nodes/BlendSpace2D/position = Vector2(-60, 140)
+node_connections = [&"output", 0, &"BlendSpace2D"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6t5aa"]
 radius = 0.2
@@ -31,20 +66,54 @@ sens_vertical = 0.001
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
 shape = SubResource("CapsuleShape3D_f60y1")
 
 [node name="visuals" type="Node3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="visuals"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+visible = false
 mesh = SubResource("CapsuleMesh_v0iea")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="visuals"]
 transform = Transform3D(0.154096, 0, 0, 0, 0.154096, 0, 0, 0, 0.154096, 0, 1.6, -0.5)
+visible = false
 mesh = SubResource("BoxMesh_v0iea")
 
-[node name="game animations" parent="visuals" instance=ExtResource("2_6t5aa")]
-visible = false
+[node name="heavy game animations" parent="visuals" instance=ExtResource("5_fkybt")]
+transform = Transform3D(-0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0)
+
+[node name="Skeleton3D" parent="visuals/heavy game animations/Armature" index="0"]
+bones/0/position = Vector3(-0.00608364, 1.75955, -0.157839)
+bones/0/rotation = Quaternion(-0.0311157, -0.0774971, -0.00242602, 0.996504)
+bones/1/rotation = Quaternion(0.11078, -0.129677, 0.0064919, 0.985327)
+bones/2/rotation = Quaternion(0.0407111, 0.0288851, 0.00931797, 0.99871)
+bones/3/rotation = Quaternion(0.0257262, 0.160738, -0.0445637, 0.985655)
+bones/4/rotation = Quaternion(0.0471029, -2.53233e-10, 1.16811e-08, 0.99889)
+bones/5/position = Vector3(0.172461, 0.463356, -0.0567525)
+bones/5/rotation = Quaternion(-0.0368224, 0.0555369, 0.860059, -0.505824)
+bones/6/rotation = Quaternion(0.396897, -0.102679, -0.490056, 0.769269)
+bones/7/rotation = Quaternion(0.262126, -0.274994, -0.317874, 0.868691)
+bones/8/rotation = Quaternion(0.377701, 0.000734726, 0.0169991, 0.925771)
+bones/9/rotation = Quaternion(0.0141464, -0.000132795, 0.0110608, 0.999839)
+bones/10/position = Vector3(-0.172461, 0.463385, -0.0566418)
+bones/10/rotation = Quaternion(0.0381152, -0.0960576, 0.839606, 0.533275)
+bones/11/rotation = Quaternion(0.0301609, 0.112951, 0.244709, 0.962523)
+bones/12/rotation = Quaternion(0.745339, -0.189529, 0.198085, 0.60771)
+bones/13/rotation = Quaternion(0.375321, -0.000778585, -0.0169973, 0.926739)
+bones/14/rotation = Quaternion(0.0115771, 0.00010426, -0.0110613, 0.999872)
+bones/15/rotation = Quaternion(0.75149, 0.0368171, -0.652029, 0.0936299)
+bones/16/rotation = Quaternion(0.12597, 0.0021723, -0.207655, 0.970055)
+bones/17/rotation = Quaternion(-0.0854168, -0.0933211, 0.728111, 0.673683)
+bones/18/rotation = Quaternion(0.612995, -0.0870094, 0.77375, 0.134079)
+bones/19/rotation = Quaternion(0.120289, -0.00217831, 0.198289, 0.972732)
+bones/20/rotation = Quaternion(-0.0657782, 0.0392165, -0.716686, 0.693179)
+
+[node name="AnimationTree" type="AnimationTree" parent="visuals/heavy game animations"]
+tree_root = SubResource("AnimationNodeBlendTree_tx1dd")
+anim_player = NodePath("../AnimationPlayer")
+parameters/BlendSpace2D/blend_position = Vector2(0.0015949, 0.00307691)
 
 [node name="camera_mount" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
@@ -85,3 +154,5 @@ transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0.507671, 1.04723, -2.9
 
 [node name="PKMLMG" parent="." instance=ExtResource("4_vgqql")]
 transform = Transform3D(-2.62268e-08, 0, 0.6, 0, 0.6, 0, -0.6, 0, -2.62268e-08, 0.509566, 0.950195, -1.13536)
+
+[editable path="visuals/heavy game animations"]
