@@ -133,7 +133,7 @@ blend_point_4/pos = Vector2(0, 0)
 sync = true
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_tx1dd"]
-graph_offset = Vector2(-679.894, -19.6902)
+graph_offset = Vector2(-748.922, -107.597)
 nodes/OneShot/node = SubResource("AnimationNodeOneShot_fkybt")
 nodes/OneShot/position = Vector2(80, 40)
 "nodes/OneShot 2/node" = SubResource("AnimationNodeOneShot_vgqql")
@@ -194,6 +194,32 @@ mesh = SubResource("BoxMesh_v0iea")
 
 [node name="heavy game animations" parent="visuals" instance=ExtResource("5_fkybt")]
 transform = Transform3D(-0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0)
+
+[node name="Skeleton3D" parent="visuals/heavy game animations/Armature" index="0"]
+bones/0/position = Vector3(-0.00119018, 1.79357, -0.11602)
+bones/0/rotation = Quaternion(-0.0314026, 0, 0, 0.999507)
+bones/1/rotation = Quaternion(-0.117541, -0.000371367, 0.00253191, 0.993065)
+bones/2/rotation = Quaternion(0.0619315, 0.0395803, -0.0166968, 0.997156)
+bones/3/rotation = Quaternion(-0.0608388, -0.0367811, -0.026721, 0.997112)
+bones/4/rotation = Quaternion(0.0471029, -4.46515e-10, 9.57753e-09, 0.99889)
+bones/5/position = Vector3(0.172456, 0.464107, -0.0565925)
+bones/5/rotation = Quaternion(0.123627, -0.0409521, 0.839071, -0.528204)
+bones/6/rotation = Quaternion(0.150249, -0.0399071, -0.377037, 0.913059)
+bones/7/rotation = Quaternion(0.372274, -0.170122, -0.544447, 0.732153)
+bones/8/rotation = Quaternion(0.377701, 0.000734786, 0.0169991, 0.925771)
+bones/9/rotation = Quaternion(0.0141464, -0.000132778, 0.0110608, 0.999839)
+bones/10/position = Vector3(-0.172457, 0.462634, -0.0568017)
+bones/10/rotation = Quaternion(0.213302, -0.109229, 0.776221, 0.58314)
+bones/11/rotation = Quaternion(0.139988, 0.0465624, 0.218168, 0.964696)
+bones/12/rotation = Quaternion(0.745382, -0.189648, 0.197992, 0.607651)
+bones/13/rotation = Quaternion(0.375321, -0.000778592, -0.0169973, 0.926739)
+bones/14/rotation = Quaternion(0.0115771, 0.000104226, -0.0110613, 0.999872)
+bones/15/rotation = Quaternion(0.645027, 0.0139034, -0.686577, 0.3352)
+bones/16/rotation = Quaternion(0.365438, 0.00158868, -0.602403, 0.709622)
+bones/17/rotation = Quaternion(-0.300612, 0.0236398, 0.56417, 0.768626)
+bones/18/rotation = Quaternion(0.660092, -0.0174962, 0.724569, 0.197413)
+bones/19/rotation = Quaternion(0.205644, -0.00205572, 0.338993, 0.918036)
+bones/20/rotation = Quaternion(-0.149048, -0.0379149, -0.437266, 0.886085)
 
 [node name="AnimationTree" type="AnimationTree" parent="visuals/heavy game animations"]
 tree_root = SubResource("AnimationNodeBlendTree_tx1dd")
