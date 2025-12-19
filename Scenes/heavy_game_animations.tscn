@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://c11qirx0gu6nk"]
+
+[ext_resource type="PackedScene" uid="uid://ve1degoe3x20" path="res://animations/heavy game animations.glb" id="1_vb2uy"]
+
+[node name="heavy game animations" instance=ExtResource("1_vb2uy")]
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/0/position = Vector3(0, 1.79005, -0.116326)
+bones/0/rotation = Quaternion(-0.0314026, 0, 0, 0.999507)
+bones/1/rotation = Quaternion(-0.117506, 1.16335e-07, 4.58225e-08, 0.993072)
+bones/2/rotation = Quaternion(0.0619315, 0.0395803, -0.0166968, 0.997156)
+bones/3/rotation = Quaternion(-0.0712466, -0.0370462, -0.0301392, 0.996315)
+bones/4/rotation = Quaternion(0.0471029, -4.46515e-10, 9.57753e-09, 0.99889)
+bones/5/position = Vector3(0.172463, 0.463371, -0.0566971)
+bones/5/rotation = Quaternion(0.123693, -0.0414834, 0.840063, -0.526568)
+bones/6/rotation = Quaternion(0.150249, -0.0399071, -0.377037, 0.913059)
+bones/7/rotation = Quaternion(0.372274, -0.170122, -0.544447, 0.732153)
+bones/8/rotation = Quaternion(0.377701, 0.000734786, 0.0169991, 0.925771)
+bones/9/rotation = Quaternion(0.0141464, -0.000132778, 0.0110608, 0.999839)
+bones/10/position = Vector3(-0.172463, 0.463371, -0.0566972)
+bones/10/rotation = Quaternion(0.213403, -0.109615, 0.774999, 0.584655)
+bones/11/rotation = Quaternion(0.139988, 0.0465624, 0.218168, 0.964696)
+bones/12/rotation = Quaternion(0.745382, -0.189648, 0.197992, 0.607651)
+bones/13/rotation = Quaternion(0.375321, -0.000778592, -0.0169973, 0.926739)
+bones/14/rotation = Quaternion(0.0115771, 0.000104226, -0.0110613, 0.999872)
+bones/15/rotation = Quaternion(0.642453, 0.0109835, -0.689867, 0.333491)
+bones/16/rotation = Quaternion(0.365569, 0.00158811, -0.60262, 0.70937)
+bones/17/rotation = Quaternion(-0.30528, 0.0254766, 0.562498, 0.767952)
+bones/18/rotation = Quaternion(0.660267, -0.0205569, 0.727523, 0.185297)
+bones/19/rotation = Quaternion(0.195176, -0.00207466, 0.321737, 0.926492)
+bones/20/rotation = Quaternion(-0.144045, -0.0382287, -0.430667, 0.890121)
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="2"]
