@@ -68,6 +68,13 @@ material_override = SubResource("StandardMaterial3D_fo5ed")
 use_collision = true
 collision_mask = 15
 
+[node name="box7" type="CSGBox3D" parent="Map"]
+transform = Transform3D(13.1975, -0.141872, 2.70471e-06, 3.53626, 0.529474, 7.24725e-07, -9.04868e-06, 0, 4.22805, 47.153, 4.76408, 1.02891)
+material_override = SubResource("StandardMaterial3D_fo5ed")
+use_collision = true
+collision_mask = 15
+size = Vector3(3.75098, 1, 1)
+
 [node name="box4" type="CSGBox3D" parent="Map"]
 transform = Transform3D(13.1975, -0.141872, 2.70471e-06, 3.53626, 0.529474, 7.24725e-07, -9.04868e-06, 0, 4.22805, 12, -0.1, -9.28502)
 material_override = SubResource("StandardMaterial3D_fo5ed")
@@ -114,3 +121,6 @@ amount = 20
 
 [node name="Node3D" parent="." instance=ExtResource("8_5v1tr")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -17.416, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.542793, 0, -0.839866, 0, 1, 0, 0.839866, 0, -0.542793, -1.05818, 1.46632, -1.9086)

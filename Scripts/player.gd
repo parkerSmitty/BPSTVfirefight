@@ -7,14 +7,18 @@ extends CharacterBody3D
 var equipped_weapon: Node = null
 
 
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
 const SMOOTH_SPEED = 10.0
 
 var SPEED = 3.0
 const JUMP_VELOCITY = 4.5
 var walking_speed = 3.0
 var running_speed = 5.0
-var aimed_speed = 2.0
+var aimed_speed = 1.5
 var running := false
+var crouch_speed := 1.5
+var crouched := false
 @export var sens_horizontal = 0.0005
 @export var sens_vertical = 0.0005
 @export var min_pitch := deg_to_rad(60)
@@ -25,6 +29,8 @@ var lean_right := false
 var lean_left := false
 var run_cam_posR = Vector3(1.0, 0.9,0.0)
 var run_cam_posL = Vector3(-1.0, 0.9,0.0)
+var crouch_cam_posR = Vector3(1.0,0.07,-1.7)
+var crouch_cam_posL = Vector3(-1.0,0.07,-1.7)
 var aim_cam_posR = Vector3(0.8, 0.5,-1.7)
 var aim_cam_posL = Vector3(-0.8, 0.5,-1.7)
 var base_cam_posR = Vector3(1.0,0.9,-0.7)
@@ -55,19 +61,56 @@ var canfire := true
 #get some sort of check for ammmo later on.
 
 #BULLLLLET DAAAA
-@onready var gun: Node3D = $PKMLMG
+@onready var gun: Node3D = $"visuals/heavy game animations/Armature/Skeleton3D/righthand/containerR/PKMLMG"
 @onready var crosshair: Label = $crosshair
-@onready var gun_anim = $PKMLMG/AnimationPlayer
-@onready var gun_muzzle = $PKMLMG/RayCast3D
+@onready var gun_anim = $"visuals/heavy game animations/Armature/Skeleton3D/righthand/containerR/PKMLMG/AnimationPlayer"
+@onready var gun_muzzle = $"visuals/heavy game animations/Armature/Skeleton3D/righthand/containerR/PKMLMG/RayCast3D"
 @onready var local_muz: Node3D = $local_muz
 var BULLET_SCENE = load("res://Scenes/bullet.tscn")
-var instance
+#var instance wtf was this used for?
 
+#character visuals and such
+@onready var move_state_machine: AnimationNodeStateMachinePlayback = $"visuals/heavy game animations/AnimationTree".get("parameters/movement/playback")
+@onready var heavy_visuals: AnimationTree = $"visuals/heavy game animations/AnimationTree"
+
+#movement
+var jumpQueued: bool;
+var falling: bool;
+var jumping:bool;
+@export var locomotionStatePlaybackPath: String;
+@export var walkingBlendPath: String;
+@export var crouchBlendPath: String;
+@export var jumpStateName: String;
+@export var fallingStateName: String;
+@export var walkingStateName: String;
+@export var crouchStateName: String;
+@export var sprintStateName: String;
+
+@export var animationTree: AnimationTree;
+@export var transitionSpeed: float = 5.0;
+@export var speed: float = 5.0;
+@export var jumpVelocity: float = 4.5
+var currentInput: Vector2;
+var currentVelocity: Vector2;
+
+func set_move_state(state_name: String) -> void:
+	move_state_machine.travel(state_name)
 
 
 func reload():
 	print("reload")
 
+func _process(delta):
+	var newDelta = currentInput - currentVelocity;
+	if (newDelta.length() > transitionSpeed * delta):
+		newDelta = newDelta.normalized() * transitionSpeed * delta;
+		
+	currentVelocity += newDelta;
+	if crouched:
+		animationTree.set(crouchBlendPath, currentVelocity) 
+	else:
+		animationTree.set(walkingBlendPath, currentVelocity)
+	
 
 func _firing():
 	#below is a working state, above is a slightly different implementation to reslvoe snaping issue
@@ -97,6 +140,7 @@ func _on_exited_car():
 	$camera_mount/SpringArm3D/Camera3D.make_current()
 
 func _ready():
+	heavy_visuals.active = true
 	
 	for car in get_parent().get_children():
 		if car is RaycastCar:
@@ -119,6 +163,8 @@ func _input(event):
 		aimed = false
 	if event.is_action_pressed("reload"):
 		pass
+	if event.is_action_pressed("crouch") and !running:
+		crouched = !crouched
 		#set reload to true and call the reload fucntion elswhere 
 		#if equipped_weapon and equipped_weapon.has_method("reload"):
 			#equipped_weapon.reload(player_inventory)
@@ -130,7 +176,14 @@ func _input(event):
 		lean_left = true
 	if Input.is_action_pressed("esc"):
 		get_tree().quit()
-	
+	if is_on_floor() && Input.is_action_just_pressed("ui_accept") && !aimed && !crouched:
+		BeginJump()
+		jumping = true
+	if event.is_action_pressed('run'):
+		is_running()
+	if event.is_action_released('run'):
+		is_running()
+		
 	var sensmulti := 10
 	if aimed:
 		sensmulti = 50
@@ -203,8 +256,21 @@ func leanLeft():
 		base_cam_current = base_cam_posL
 
 
-
+var walk_blend := Vector2.ZERO
+var crouch_blend := Vector2.ZERO
+var was_on_floor: bool = false
+var jump_queued := false
+var jump_delay := 0.30  # seconds before actual takeoff
 func _physics_process(delta: float) -> void:
+	var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+	if canfire and firing:
+		_firing()
+	
+	##+++++++++++++++CAMERA STUFF AND ROTATING VISUALS VVV++++++++++++++++++++
+
+	var visual_dir = Vector3(currentInput.x,0, currentInput.y).normalized()
+	var current_rot = visuals.global_rotation
+	var target_y = camera.global_rotation.y
 	var fov_speed = 6.0
 	var target_fov
 	if aimed:
@@ -241,57 +307,13 @@ func _physics_process(delta: float) -> void:
 		target = base_cam_current
 	cam_spring.position = cam_spring.position.lerp(target,0.09)
 	
-	
-	#if aimed != previous_aimed:
-	#	if aimed:
-	#		aim()
-	#	else:
-	#		unaim()
-	#	previous_aimed = aimed
-	
-	if canfire and firing:
-		_firing()
-	
-	#adjusts animing speed
-	if Input.is_action_pressed("run") or Input.is_action_just_pressed("ui_accept") and !aimed:
-		SPEED = running_speed
-		running = true 
-		if !aimed:
-			if base_cam_current == base_cam_posR:
-				cam_spring.position = cam_spring.position.lerp(run_cam_posR, 0.05)
-			else:
-				cam_spring.position = cam_spring.position.lerp(run_cam_posL, 0.05)
-	
-	elif !aimed:
-		SPEED = walking_speed
-		running = false
-		cam_spring.position = cam_spring.position.lerp(base_cam_current, 0.05)
-	if aimed:
-		SPEED = aimed_speed
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor() and !aimed:
-		velocity.y = JUMP_VELOCITY
-	var input_dir := Input.get_vector("left", "right", "forward", "backward")
-	
-	
-	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	var visual_dir = Vector3(input_dir.x,0, input_dir.y).normalized()
-	var current_rot = visuals.global_rotation
-	var target_y = camera.global_rotation.y
+		#rotating visuals 
 	current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
 	visuals.global_rotation = current_rot
 	if aimed or firing:
 		current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
 		visuals.global_rotation = current_rot
 	
-	if direction.length() > 0.01:
-		input_dir = input_dir.normalized()
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
-		visuals.global_rotation = current_rot
 		#if !aimed and !firing: 
 			#visuals.rotation.y = lerp_angle(visuals.rotation.y,atan2(-visual_dir.x, -visual_dir.z), delta * SMOOTH_SPEED)
 		#change this back to having the character look the direction theyre walking. ^^^^^
@@ -300,11 +322,178 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 	
-	#GUN ROTATION
+	##++++++++++++++++++CAMERA STUFF AND ROTATING VISUALS ^^^^+++++++++++++++++++++++++
+	##====================PLAYER MOVEMENT AND ANIMATION VVV=======================
 	
+	if !is_on_floor():
+		velocity.y -= gravity * delta
+		jumpQueued = false
+		jumping = true
+		if !falling:
+			falling = true
+			#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+			playback.travel(fallingStateName)
+	else: if falling:
+		falling = false
+		#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+		playback.travel(walkingStateName)
+		jumping = false
+		crouched = false
+	
+	if jumpQueued:
+		velocity.y = jumpVelocity
+		jumpQueued = false
+		falling = true
+	
+	currentInput = Input.get_vector("left", "right", "forward", "backward")
+	var direction := (transform.basis * Vector3(currentInput.x, 0, currentInput.y)).normalized()
+	if direction:
+		velocity.x = direction.x * SPEED
+		velocity.z = direction.z * SPEED
+	else:
+		velocity.x = move_toward(velocity.x,0,SPEED)
+		velocity.z = move_toward(velocity.z,0,SPEED)
+	
+	#running with a check for jumping to overrider
+	if running and !jumping and !aimed and currentInput.y < -0.1 and abs(currentInput.x) < 0.2 and is_on_floor():
+		SPEED = running_speed
+		crouched = false
+		playback.travel(sprintStateName)
+	if !running and !crouched and !jumping:
+		SPEED = walking_speed
+		if is_on_floor():
+			playback.travel(walkingStateName)
+	
+	if !running and !jumping and crouched and is_on_floor():
+		SPEED = crouch_speed
+		playback.travel(crouchStateName)
+		#want to use crouch blendspace here
 	
 	move_and_slide()
+
+func is_running():
+	running = !running
+	
+
+func BeginJump():
+	var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+	playback.travel(jumpStateName)
+
+func ExecuteJumpVelocity():
+	jumpQueued = true
+
 func get_player_inventory() -> PlayerInventory:
 	return $Node
+
+
+
+#graveyard, maybe some useful stuff down there
+	
+	
+	#if aimed != previous_aimed:
+	#	if aimed:
+	#		aim()
+	#	else:
+	#		unaim()
+	#	previous_aimed = aimed
+	
+	
+	#idk what this does? VVV probably redundant 
+	#if direction.length() > 0.01:
+		#currentInput = currentInput.normalized()
+		#velocity.x = direction.x * SPEED
+		#velocity.z = direction.z * SPEED
+		#visuals.global_rotation = current_rot
+	#probably redundent^^^
+	
+	
+	# old implementation vVvvv
+	#walk_blend = walk_blend.lerp(currentInput, delta * 8.0)
+	#heavy_visuals.set("parameters/movement/walk/blend_position", walk_blend)
+	#
+	#crouch_blend = crouch_blend.lerp(currentInput, delta * 8.0)
+	#heavy_visuals.set("parameters/movement/crouch/blend_position", crouch_blend)
+	#
+	##handle movement like so: landing > crouch > running > aiming > walking
+	##if landing: handel landing here
+	#if crouched and is_on_floor():
+		#SPEED = aimed_speed
+		#set_move_state('crouch')
+		#if base_cam_current == base_cam_posR:
+			#cam_spring.position = cam_spring.position.lerp(crouch_cam_posR, 0.05)
+		#else:
+			#cam_spring.position = cam_spring.position.lerp(crouch_cam_posL, 0.05)
+	#
+	#if SPEED != running_speed and !crouched:
+		#set_move_state('walk')
+#
+	##crouch logic and visuals
+	#if not running and is_on_floor() and crouched:
+		#SPEED = aimed_speed
+		#set_move_state('crouch')
+		#if base_cam_current == base_cam_posR:
+			#cam_spring.position = cam_spring.position.lerp(crouch_cam_posR, 0.05)
+		#else:
+			#cam_spring.position = cam_spring.position.lerp(crouch_cam_posL, 0.05)
+	#
+	#if crouched and Input.is_action_pressed("crouch"):
+		#set_move_state('walk')
+		#SPEED = walking_speed
+		#
+	#
+	##adjusts animing speed
+	#if Input.is_action_pressed("run") and !aimed and currentInput.y < -0.1 and abs(currentInput.x) < 0.2:
+		#SPEED = running_speed
+		#running = true 
+		#crouched = false
+		#set_move_state('heavy_run')
+		#if !aimed:
+			#if base_cam_current == base_cam_posR:
+				#cam_spring.position = cam_spring.position.lerp(run_cam_posR, 0.05)
+			#else:
+				#cam_spring.position = cam_spring.position.lerp(run_cam_posL, 0.05)
+	#
+	#elif !aimed and !crouched:
+		#SPEED = walking_speed
+		#running = false
+		#cam_spring.position = cam_spring.position.lerp(base_cam_current, 0.05)
+	#if aimed:
+		#SPEED = aimed_speed
+	#
+	## Handle jump.
+	#if !is_on_floor():
+		#velocity -= get_gravity() * delta
+		#jumpQueued = false
+		#if !falling:
+			#falling = true
+			#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+			#playback.travel(fallingStateName)
+	#else: if falling:
+		#falling = false
+		#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+		#playback.travel(walkingStateName)
+	##put it after the falling handler makes sure that the transition
+	##dosnt automactically force it into a falling animation instead of letting the jump animation natually
+	##finish
+	#if jumpQueued:
+		#velocity.y = jumpVelocity
+		#jumpQueued = false
+		#falling = true
+	#
+	## Add the gravity.
+	#if not is_on_floor():
+		#velocity +=  get_gravity() * delta
+	##update state 
+	#move_and_slide()
+	## determine on-floor and vertical motion state
+	#
+	#
+	#
+	#
+	##GUN ROTATION
+	
+	
+
+
 #func get_inventory() -> Inventory:
 #	return $InventoryNode

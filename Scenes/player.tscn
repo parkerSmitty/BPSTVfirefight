@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=3 uid="uid://l1ceeh6o3xf"]
+[gd_scene load_steps=70 format=3 uid="uid://l1ceeh6o3xf"]
 
 [ext_resource type="Script" uid="uid://bdnhe7ub4767j" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://wmc3jchvr21c" path="res://Scenes/PlayerInventory.gd" id="3_vgqql"]
@@ -50,32 +50,32 @@ states/heavy_unaim/node = SubResource("AnimationNodeAnimation_qqcod")
 states/heavy_unaim/position = Vector2(672, 117)
 transitions = ["Start", "heavy_aim", SubResource("AnimationNodeStateMachineTransition_igrcy"), "heavy_aim", "heavy_unaim", SubResource("AnimationNodeStateMachineTransition_fs7ks")]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_f1ek2"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vgqql"]
 animation = &"HeavycrouchIdle"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tx1dd"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fkybt"]
 animation = &"HeavycrouchWalk"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gymyn"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x3wgy"]
 animation = &"HeavycrouchWalkLeft"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pu2lt"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3smsa"]
 animation = &"HeavycrouchWalkRight"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ukyrk"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8erm5"]
 animation = &"HeavycrouchWalk"
 play_mode = 1
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_7dp3o"]
-blend_point_0/node = SubResource("AnimationNodeAnimation_f1ek2")
+blend_point_0/node = SubResource("AnimationNodeAnimation_vgqql")
 blend_point_0/pos = Vector2(0, 0)
-blend_point_1/node = SubResource("AnimationNodeAnimation_tx1dd")
+blend_point_1/node = SubResource("AnimationNodeAnimation_fkybt")
 blend_point_1/pos = Vector2(0, -1)
-blend_point_2/node = SubResource("AnimationNodeAnimation_gymyn")
+blend_point_2/node = SubResource("AnimationNodeAnimation_x3wgy")
 blend_point_2/pos = Vector2(1, 0)
-blend_point_3/node = SubResource("AnimationNodeAnimation_pu2lt")
+blend_point_3/node = SubResource("AnimationNodeAnimation_3smsa")
 blend_point_3/pos = Vector2(-1, 0)
-blend_point_4/node = SubResource("AnimationNodeAnimation_ukyrk")
+blend_point_4/node = SubResource("AnimationNodeAnimation_8erm5")
 blend_point_4/pos = Vector2(0, 1)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_h4iuc"]
@@ -84,33 +84,33 @@ animation = &"heavy_hurt_two"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wpjfl"]
 animation = &"Heavy_falling"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0gysh"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_f1ek2"]
 animation = &"HeavycrouchIdle"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y6uwr"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tx1dd"]
 animation = &"HeavycrouchWalk"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_83xs0"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gymyn"]
 animation = &"HeavycrouchWalk"
 play_mode = 1
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ypfnu"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pu2lt"]
 animation = &"HeavycrouchWalkRight"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xuaoq"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ukyrk"]
 animation = &"HeavycrouchWalkLeft"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_wohnl"]
-blend_point_0/node = SubResource("AnimationNodeAnimation_0gysh")
+blend_point_0/node = SubResource("AnimationNodeAnimation_f1ek2")
 blend_point_0/pos = Vector2(0, 0)
-blend_point_1/node = SubResource("AnimationNodeAnimation_y6uwr")
+blend_point_1/node = SubResource("AnimationNodeAnimation_tx1dd")
 blend_point_1/pos = Vector2(0, -1)
-blend_point_2/node = SubResource("AnimationNodeAnimation_83xs0")
+blend_point_2/node = SubResource("AnimationNodeAnimation_gymyn")
 blend_point_2/pos = Vector2(0, 1)
-blend_point_3/node = SubResource("AnimationNodeAnimation_ypfnu")
-blend_point_3/pos = Vector2(-1, 0)
-blend_point_4/node = SubResource("AnimationNodeAnimation_xuaoq")
-blend_point_4/pos = Vector2(1, 0)
+blend_point_3/node = SubResource("AnimationNodeAnimation_pu2lt")
+blend_point_3/pos = Vector2(1, 0)
+blend_point_4/node = SubResource("AnimationNodeAnimation_ukyrk")
+blend_point_4/pos = Vector2(-1, 0)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_36dho"]
 animation = &"heavy_crouch"
@@ -141,7 +141,7 @@ animation = &"heavy_walk_right"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_olqyp"]
 animation = &"heavy_walk_left"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nv4vc"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0gysh"]
 animation = &"heavy_idle"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_wpjfl"]
@@ -150,10 +150,10 @@ blend_point_0/pos = Vector2(0, -1)
 blend_point_1/node = SubResource("AnimationNodeAnimation_fs7ks")
 blend_point_1/pos = Vector2(0, 1)
 blend_point_2/node = SubResource("AnimationNodeAnimation_l6n3p")
-blend_point_2/pos = Vector2(-1, 0)
+blend_point_2/pos = Vector2(1, 0)
 blend_point_3/node = SubResource("AnimationNodeAnimation_olqyp")
-blend_point_3/pos = Vector2(1, 0)
-blend_point_4/node = SubResource("AnimationNodeAnimation_nv4vc")
+blend_point_3/pos = Vector2(-1, 0)
+blend_point_4/node = SubResource("AnimationNodeAnimation_0gysh")
 blend_point_4/pos = Vector2(0, 0)
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bi64h"]
@@ -171,7 +171,7 @@ advance_mode = 2
 xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_83xs0"]
-xfade_time = 0.3
+xfade_time = 0.5
 switch_mode = 2
 advance_mode = 2
 
@@ -199,18 +199,25 @@ switch_mode = 2
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7ldla"]
+xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_r7t2e"]
 xfade_time = 0.2
 switch_mode = 2
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vgqql"]
+xfade_time = 0.8
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fkybt"]
+xfade_time = 0.6
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_2ijsl"]
 states/Heavy_falling/node = SubResource("AnimationNodeAnimation_wpjfl")
 states/Heavy_falling/position = Vector2(508, 292)
 states/Start/position = Vector2(180, 100)
 states/crouch/node = SubResource("AnimationNodeBlendSpace2D_wohnl")
-states/crouch/position = Vector2(621.297, -82.2179)
+states/crouch/position = Vector2(621.297, -83.2179)
 states/heavy_crouch/node = SubResource("AnimationNodeAnimation_36dho")
 states/heavy_crouch/position = Vector2(517, -1.21793)
 states/heavy_jump/node = SubResource("AnimationNodeAnimation_bi64h")
@@ -223,43 +230,43 @@ states/heavy_stand/node = SubResource("AnimationNodeAnimation_yh6i2")
 states/heavy_stand/position = Vector2(429.297, -51.2179)
 states/walk/node = SubResource("AnimationNodeBlendSpace2D_wpjfl")
 states/walk/position = Vector2(381, 91)
-transitions = ["Start", "walk", SubResource("AnimationNodeStateMachineTransition_bi64h"), "walk", "heavy_jump", SubResource("AnimationNodeStateMachineTransition_0gysh"), "heavy_jump", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_vfarp"), "Heavy_falling", "heavy_landing", SubResource("AnimationNodeStateMachineTransition_y6uwr"), "heavy_landing", "walk", SubResource("AnimationNodeStateMachineTransition_83xs0"), "walk", "heavy_run", SubResource("AnimationNodeStateMachineTransition_8gxox"), "heavy_run", "heavy_jump", SubResource("AnimationNodeStateMachineTransition_11gg7"), "walk", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_qpa8y"), "heavy_run", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_sbwqj"), "heavy_run", "walk", SubResource("AnimationNodeStateMachineTransition_xwi16"), "walk", "heavy_crouch", SubResource("AnimationNodeStateMachineTransition_sweqm"), "heavy_crouch", "crouch", SubResource("AnimationNodeStateMachineTransition_ph33w"), "crouch", "heavy_stand", SubResource("AnimationNodeStateMachineTransition_7ldla"), "heavy_stand", "walk", SubResource("AnimationNodeStateMachineTransition_r7t2e")]
-graph_offset = Vector2(-13.7026, -96.418)
+transitions = ["Start", "walk", SubResource("AnimationNodeStateMachineTransition_bi64h"), "walk", "heavy_jump", SubResource("AnimationNodeStateMachineTransition_0gysh"), "heavy_jump", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_vfarp"), "Heavy_falling", "heavy_landing", SubResource("AnimationNodeStateMachineTransition_y6uwr"), "heavy_landing", "walk", SubResource("AnimationNodeStateMachineTransition_83xs0"), "walk", "heavy_run", SubResource("AnimationNodeStateMachineTransition_8gxox"), "heavy_run", "heavy_jump", SubResource("AnimationNodeStateMachineTransition_11gg7"), "walk", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_qpa8y"), "heavy_run", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_sbwqj"), "heavy_run", "walk", SubResource("AnimationNodeStateMachineTransition_xwi16"), "walk", "heavy_crouch", SubResource("AnimationNodeStateMachineTransition_sweqm"), "heavy_crouch", "crouch", SubResource("AnimationNodeStateMachineTransition_ph33w"), "crouch", "heavy_stand", SubResource("AnimationNodeStateMachineTransition_7ldla"), "heavy_stand", "walk", SubResource("AnimationNodeStateMachineTransition_r7t2e"), "heavy_run", "crouch", SubResource("AnimationNodeStateMachineTransition_vgqql"), "heavy_landing", "heavy_run", SubResource("AnimationNodeStateMachineTransition_fkybt")]
+graph_offset = Vector2(43.297, -150.743)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vfarp"]
 animation = &"heavyfire"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vgqql"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y6uwr"]
 animation = &"heavy_walk"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fkybt"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_83xs0"]
 animation = &"heavy_walk_left"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x3wgy"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ypfnu"]
 animation = &"heavy_walk_right"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3smsa"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xuaoq"]
 animation = &"heavy_walk"
 play_mode = 1
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8erm5"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wohnl"]
 animation = &"heavy_idle"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_f1ek2"]
-blend_point_0/node = SubResource("AnimationNodeAnimation_vgqql")
+blend_point_0/node = SubResource("AnimationNodeAnimation_y6uwr")
 blend_point_0/pos = Vector2(0, -1)
-blend_point_1/node = SubResource("AnimationNodeAnimation_fkybt")
+blend_point_1/node = SubResource("AnimationNodeAnimation_83xs0")
 blend_point_1/pos = Vector2(1, 0)
-blend_point_2/node = SubResource("AnimationNodeAnimation_x3wgy")
+blend_point_2/node = SubResource("AnimationNodeAnimation_ypfnu")
 blend_point_2/pos = Vector2(-1, 0)
-blend_point_3/node = SubResource("AnimationNodeAnimation_3smsa")
+blend_point_3/node = SubResource("AnimationNodeAnimation_xuaoq")
 blend_point_3/pos = Vector2(0, 1)
-blend_point_4/node = SubResource("AnimationNodeAnimation_8erm5")
+blend_point_4/node = SubResource("AnimationNodeAnimation_wohnl")
 blend_point_4/pos = Vector2(0, 0)
 sync = true
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_tx1dd"]
-graph_offset = Vector2(-930.453, -8.004)
+graph_offset = Vector2(-896.915, 31.8058)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_igrcy")
 nodes/Animation/position = Vector2(-540, 260)
 nodes/OneShot/node = SubResource("AnimationNodeOneShot_fkybt")
@@ -269,7 +276,7 @@ nodes/OneShot/position = Vector2(80, 40)
 nodes/aim_blend/node = SubResource("AnimationNodeBlend2_vgqql")
 nodes/aim_blend/position = Vector2(-280, 60)
 nodes/aiming/node = SubResource("AnimationNodeStateMachine_l6n3p")
-nodes/aiming/position = Vector2(-740, 380)
+nodes/aiming/position = Vector2(-840, 420)
 "nodes/crouch walk/node" = SubResource("AnimationNodeBlendSpace2D_7dp3o")
 "nodes/crouch walk/position" = Vector2(-560, -220)
 nodes/hurt_two/node = SubResource("AnimationNodeAnimation_h4iuc")
@@ -295,11 +302,20 @@ font_color = Color(1, 0.64, 0.28, 1)
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
-[node name="Player" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("animationTree")]
 collision_mask = 15
 script = ExtResource("1_v0iea")
 sens_horizontal = 0.001
 sens_vertical = 0.001
+locomotionStatePlaybackPath = "parameters/movement/playback"
+walkingBlendPath = "parameters/movement/walk/blend_position"
+crouchBlendPath = "parameters/crouch walk/blend_position"
+jumpStateName = "heavy_jump"
+fallingStateName = "Heavy_falling"
+walkingStateName = "walk"
+crouchStateName = "crouch"
+sprintStateName = "heavy_run"
+animationTree = NodePath("visuals/heavy game animations/AnimationTree")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -322,30 +338,47 @@ mesh = SubResource("BoxMesh_v0iea")
 transform = Transform3D(-0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0)
 
 [node name="Skeleton3D" parent="visuals/heavy game animations/Armature" index="0"]
-bones/0/position = Vector3(-0.00608801, 1.13514, -0.116289)
-bones/0/rotation = Quaternion(0.107112, -0.0772276, -0.00217968, 0.991241)
-bones/1/rotation = Quaternion(-0.0298274, -0.0932792, -0.0106608, 0.995136)
-bones/2/rotation = Quaternion(0.0420331, 0.0293533, 0.00852237, 0.998649)
-bones/3/rotation = Quaternion(0.0358837, 0.135288, -0.0118026, 0.990086)
-bones/4/rotation = Quaternion(0.0471029, -2.59442e-10, 1.08865e-08, 0.99889)
-bones/5/position = Vector3(0.172449, 0.463339, -0.0568668)
-bones/5/rotation = Quaternion(-0.0366976, 0.0552971, 0.860111, -0.505771)
-bones/6/rotation = Quaternion(0.399357, -0.171802, -0.544033, 0.717653)
-bones/7/rotation = Quaternion(0.264019, -0.180586, -0.196649, 0.926829)
-bones/8/rotation = Quaternion(0.377701, 0.000734758, 0.0169991, 0.925771)
-bones/9/rotation = Quaternion(0.0141464, -0.000132804, 0.0110608, 0.999839)
-bones/10/position = Vector3(-0.172449, 0.463403, -0.0565275)
-bones/10/rotation = Quaternion(0.0384265, -0.0960757, 0.839592, 0.533272)
+bones/0/position = Vector3(-0.0060796, 1.7584, -0.15777)
+bones/0/rotation = Quaternion(-0.0311148, -0.0778599, -0.00243728, 0.996476)
+bones/1/rotation = Quaternion(0.111771, -0.129679, 0.00668237, 0.985214)
+bones/2/rotation = Quaternion(0.0410043, 0.0290275, 0.00920884, 0.998695)
+bones/3/rotation = Quaternion(0.0255489, 0.161288, -0.0447859, 0.98556)
+bones/4/rotation = Quaternion(0.0471029, -2.54503e-10, 1.16844e-08, 0.99889)
+bones/5/position = Vector3(0.172464, 0.46337, -0.0566971)
+bones/5/rotation = Quaternion(-0.0368779, 0.0556972, 0.860024, -0.505863)
+bones/6/rotation = Quaternion(0.397299, -0.101908, -0.490377, 0.768959)
+bones/7/rotation = Quaternion(0.262174, -0.275658, -0.317253, 0.868693)
+bones/8/rotation = Quaternion(0.377701, 0.000734726, 0.0169991, 0.925771)
+bones/9/rotation = Quaternion(0.0141464, -0.000132795, 0.0110608, 0.999839)
+bones/10/position = Vector3(-0.172464, 0.463371, -0.0566973)
+bones/10/rotation = Quaternion(0.0379636, -0.0960322, 0.839657, 0.533209)
 bones/11/rotation = Quaternion(0.0300625, 0.113356, 0.244842, 0.962444)
 bones/12/rotation = Quaternion(0.745382, -0.189648, 0.197992, 0.607651)
-bones/13/rotation = Quaternion(0.375321, -0.000778559, -0.0169973, 0.926739)
-bones/14/rotation = Quaternion(0.011577, 0.000104277, -0.0110612, 0.999872)
-bones/15/rotation = Quaternion(0.432906, -0.100194, -0.611064, 0.655098)
-bones/16/rotation = Quaternion(0.401942, 0.00141477, -0.662578, 0.632006)
-bones/17/rotation = Quaternion(-0.0798364, 0.0343187, 0.770059, 0.632027)
-bones/18/rotation = Quaternion(0.817571, -0.00471601, 0.483181, 0.313197)
-bones/19/rotation = Quaternion(0.262438, -0.00639727, 0.845759, 0.464519)
-bones/20/rotation = Quaternion(0.0511811, -0.100944, -0.855718, 0.504913)
+bones/13/rotation = Quaternion(0.375321, -0.000778585, -0.0169973, 0.926739)
+bones/14/rotation = Quaternion(0.0115771, 0.00010426, -0.0110613, 0.999872)
+bones/15/rotation = Quaternion(0.75159, 0.0365898, -0.651827, 0.0943146)
+bones/16/rotation = Quaternion(0.127331, 0.00217081, -0.209899, 0.969394)
+bones/17/rotation = Quaternion(-0.0860046, -0.0929605, 0.729078, 0.672612)
+bones/18/rotation = Quaternion(0.612538, -0.0872796, 0.773855, 0.135382)
+bones/19/rotation = Quaternion(0.121443, -0.00217709, 0.200192, 0.972199)
+bones/20/rotation = Quaternion(-0.0658816, 0.0385426, -0.717845, 0.692006)
+
+[node name="righthand" type="BoneAttachment3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="1"]
+transform = Transform3D(-0.878721, 0.0930272, 0.468183, 0.417478, -0.325769, 0.848285, 0.231433, 0.940861, 0.247423, -0.82793, 2.20995, -0.10642)
+bone_name = "hand.r"
+bone_idx = 14
+
+[node name="containerR" type="Node3D" parent="visuals/heavy game animations/Armature/Skeleton3D/righthand"]
+
+[node name="PKMLMG" parent="visuals/heavy game animations/Armature/Skeleton3D/righthand/containerR" instance=ExtResource("4_vgqql")]
+transform = Transform3D(0.118526, 0.184833, 0.404213, 0.423308, -0.174484, -0.0443393, 0.135507, 0.383396, -0.215048, 0.0419091, 0.654366, 0.354485)
+
+[node name="lefthand" type="BoneAttachment3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="2"]
+transform = Transform3D(-0.398388, -0.883216, 0.247421, 0.74974, -0.158181, 0.642548, -0.528371, 0.441485, 0.7252, -0.32399, 2.28191, 0.696913)
+bone_name = "hand.l"
+bone_idx = 9
+
+[node name="containerL" type="Node3D" parent="visuals/heavy game animations/Armature/Skeleton3D/lefthand"]
 
 [node name="AnimationTree" type="AnimationTree" parent="visuals/heavy game animations"]
 tree_root = SubResource("AnimationNodeBlendTree_tx1dd")
@@ -358,8 +391,8 @@ parameters/OneShot/request = 0
 "parameters/OneShot 2/request" = 0
 parameters/aim_blend/blend_amount = 0.0
 "parameters/crouch walk/blend_position" = Vector2(0, 0)
-parameters/movement/crouch/blend_position = Vector2(0.0207336, -0.0672646)
-parameters/movement/walk/blend_position = Vector2(0, -0.829146)
+parameters/movement/crouch/blend_position = Vector2(0, 0)
+parameters/movement/walk/blend_position = Vector2(0, 0)
 parameters/walking/blend_position = Vector2(0.125997, 0.0291971)
 
 [node name="camera_mount" type="Node3D" parent="."]
@@ -398,8 +431,5 @@ label_settings = SubResource("LabelSettings_6t5aa")
 
 [node name="local_muz" type="Node3D" parent="."]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0.507671, 1.04723, -2.93425)
-
-[node name="PKMLMG" parent="." instance=ExtResource("4_vgqql")]
-transform = Transform3D(-2.62268e-08, 0, 0.6, 0, 0.6, 0, -0.6, 0, -2.62268e-08, 0.509566, 0.950195, -1.13536)
 
 [editable path="visuals/heavy game animations"]
