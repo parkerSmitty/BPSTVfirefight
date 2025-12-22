@@ -17,6 +17,7 @@ var walking_speed = 3.0
 var running_speed = 5.0
 var aimed_speed = 1.5
 var running := false
+var start_run := false
 var crouch_speed := 1.5
 var crouched := false
 @export var sens_horizontal = 0.0005
@@ -355,12 +356,18 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z,0,SPEED)
 	
 	#running with a check for jumping to overrider
-	if running and !jumping and !aimed and currentInput.y < -0.1 and abs(currentInput.x) < 0.2 and is_on_floor():
+	#maybe move all these checks to input and change this to a function that is 
+	#triggered from the running animation. this will help with movement speed being shifted
+	#to running before the player is fully standing, as well as movement speed not shifting
+	#before the walk animation fully transfer to running animation
+	if start_run and !jumping and !aimed and currentInput.y < -0.1 and abs(currentInput.x) < 0.1 and is_on_floor():
 		SPEED = running_speed
 		crouched = false
+		running = true
 		playback.travel(sprintStateName)
-	if !running and !crouched and !jumping:
+	elif !crouched and !jumping and !aimed:
 		SPEED = walking_speed
+		running = false
 		if is_on_floor():
 			playback.travel(walkingStateName)
 	
@@ -372,7 +379,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func is_running():
-	running = !running
+	start_run = !start_run
 	
 
 func BeginJump():
