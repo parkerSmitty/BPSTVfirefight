@@ -374,6 +374,8 @@ func _physics_process(delta: float) -> void:
 	if !running and !jumping and crouched and is_on_floor():
 		SPEED = crouch_speed
 		playback.travel(crouchStateName)
+		#animationTree.set(crouchBlendPath, currentVelocity) 
+		
 		#want to use crouch blendspace here
 	
 	move_and_slide()
