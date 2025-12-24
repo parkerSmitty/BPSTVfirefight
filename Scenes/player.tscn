@@ -14,18 +14,6 @@
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_igrcy"]
 animation = &"heavy_aim"
 
-[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_vgqql"]
-filter_enabled = true
-filters = ["", "Armature/Skeleton3D:Head", "Armature/Skeleton3D:Neck", "Armature/Skeleton3D:Shoulder.l", "Armature/Skeleton3D:Shoulder.r", "Armature/Skeleton3D:Spine 2", "Armature/Skeleton3D:Spine 3", "Armature/Skeleton3D:Upperarm.l", "Armature/Skeleton3D:Upperarm.r", "Armature/Skeleton3D:forearm.l", "Armature/Skeleton3D:forearm.r", "Armature/Skeleton3D:hand.l", "Armature/Skeleton3D:hand.r", "Armature/Skeleton3D:thumb.l", "Armature/Skeleton3D:thumb.r"]
-fadein_time = 0.1
-fadeout_time = 0.1
-
-[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_fkybt"]
-filter_enabled = true
-filters = ["Armature/Skeleton3D:Shoulder.l", "Armature/Skeleton3D:Shoulder.r", "Armature/Skeleton3D:Upperarm.l", "Armature/Skeleton3D:Upperarm.r", "Armature/Skeleton3D:forearm.l", "Armature/Skeleton3D:forearm.r", "Armature/Skeleton3D:hand.l", "Armature/Skeleton3D:hand.r", "Armature/Skeleton3D:thumb.l", "Armature/Skeleton3D:thumb.r"]
-fadein_time = 0.2
-fadeout_time = 0.2
-
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_vgqql"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Head", "Armature/Skeleton3D:Neck", "Armature/Skeleton3D:Shoulder.l", "Armature/Skeleton3D:Shoulder.r", "Armature/Skeleton3D:Upperarm.l", "Armature/Skeleton3D:Upperarm.r", "Armature/Skeleton3D:forearm.l", "Armature/Skeleton3D:forearm.r", "Armature/Skeleton3D:hand.l", "Armature/Skeleton3D:hand.r", "Armature/Skeleton3D:thumb.l", "Armature/Skeleton3D:thumb.r"]
@@ -78,6 +66,18 @@ blend_point_3/pos = Vector2(-1, 0)
 blend_point_4/node = SubResource("AnimationNodeAnimation_8erm5")
 blend_point_4/pos = Vector2(0, 1)
 
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_fkybt"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:Shoulder.l", "Armature/Skeleton3D:Shoulder.r", "Armature/Skeleton3D:Upperarm.l", "Armature/Skeleton3D:Upperarm.r", "Armature/Skeleton3D:forearm.l", "Armature/Skeleton3D:forearm.r", "Armature/Skeleton3D:hand.l", "Armature/Skeleton3D:hand.r", "Armature/Skeleton3D:thumb.l", "Armature/Skeleton3D:thumb.r"]
+fadein_time = 0.2
+fadeout_time = 0.2
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_vgqql"]
+filter_enabled = true
+filters = ["", "Armature/Skeleton3D:Head", "Armature/Skeleton3D:Neck", "Armature/Skeleton3D:Shoulder.l", "Armature/Skeleton3D:Shoulder.r", "Armature/Skeleton3D:Spine 2", "Armature/Skeleton3D:Spine 3", "Armature/Skeleton3D:Upperarm.l", "Armature/Skeleton3D:Upperarm.r", "Armature/Skeleton3D:forearm.l", "Armature/Skeleton3D:forearm.r", "Armature/Skeleton3D:hand.l", "Armature/Skeleton3D:hand.r", "Armature/Skeleton3D:thumb.l", "Armature/Skeleton3D:thumb.r"]
+fadein_time = 0.1
+fadeout_time = 0.1
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_h4iuc"]
 animation = &"heavy_hurt_two"
 
@@ -117,9 +117,19 @@ animation = &"heavy_crouch"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bi64h"]
 animation = &"heavy_jump"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.28
+loop_mode = 0
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2ijsl"]
 animation = &"heavy_landing"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.25
+loop_mode = 0
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_p1odr"]
 animation = &"heavy_run"
@@ -231,10 +241,15 @@ states/heavy_stand/position = Vector2(429.297, -51.2179)
 states/walk/node = SubResource("AnimationNodeBlendSpace2D_wpjfl")
 states/walk/position = Vector2(381, 91)
 transitions = ["Start", "walk", SubResource("AnimationNodeStateMachineTransition_bi64h"), "walk", "heavy_jump", SubResource("AnimationNodeStateMachineTransition_0gysh"), "heavy_jump", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_vfarp"), "Heavy_falling", "heavy_landing", SubResource("AnimationNodeStateMachineTransition_y6uwr"), "heavy_landing", "walk", SubResource("AnimationNodeStateMachineTransition_83xs0"), "walk", "heavy_run", SubResource("AnimationNodeStateMachineTransition_8gxox"), "heavy_run", "heavy_jump", SubResource("AnimationNodeStateMachineTransition_11gg7"), "walk", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_qpa8y"), "heavy_run", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_sbwqj"), "heavy_run", "walk", SubResource("AnimationNodeStateMachineTransition_xwi16"), "walk", "heavy_crouch", SubResource("AnimationNodeStateMachineTransition_sweqm"), "heavy_crouch", "crouch", SubResource("AnimationNodeStateMachineTransition_ph33w"), "crouch", "heavy_stand", SubResource("AnimationNodeStateMachineTransition_7ldla"), "heavy_stand", "walk", SubResource("AnimationNodeStateMachineTransition_r7t2e"), "heavy_run", "crouch", SubResource("AnimationNodeStateMachineTransition_vgqql"), "heavy_landing", "heavy_run", SubResource("AnimationNodeStateMachineTransition_fkybt")]
-graph_offset = Vector2(-9.703, -113.743)
+graph_offset = Vector2(-152.703, 114.257)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vfarp"]
 animation = &"heavyfire"
+use_custom_timeline = true
+timeline_length = 0.1
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y6uwr"]
 animation = &"heavy_walk"
@@ -266,19 +281,19 @@ blend_point_4/pos = Vector2(0, 0)
 sync = true
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_tx1dd"]
-graph_offset = Vector2(-758.073, 29.4267)
+graph_offset = Vector2(-530, 91)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_igrcy")
 nodes/Animation/position = Vector2(-540, 260)
-nodes/OneShot/node = SubResource("AnimationNodeOneShot_fkybt")
-nodes/OneShot/position = Vector2(80, 40)
-"nodes/OneShot 2/node" = SubResource("AnimationNodeOneShot_vgqql")
-"nodes/OneShot 2/position" = Vector2(420, 20)
 nodes/aim_blend/node = SubResource("AnimationNodeBlend2_vgqql")
 nodes/aim_blend/position = Vector2(-280, 60)
 nodes/aiming/node = SubResource("AnimationNodeStateMachine_l6n3p")
 nodes/aiming/position = Vector2(-840, 420)
 "nodes/crouch walk/node" = SubResource("AnimationNodeBlendSpace2D_7dp3o")
 "nodes/crouch walk/position" = Vector2(-560, -220)
+nodes/fire/node = SubResource("AnimationNodeOneShot_fkybt")
+nodes/fire/position = Vector2(80, 40)
+nodes/hit/node = SubResource("AnimationNodeOneShot_vgqql")
+nodes/hit/position = Vector2(420, 20)
 nodes/hurt_two/node = SubResource("AnimationNodeAnimation_h4iuc")
 nodes/hurt_two/position = Vector2(60, 360)
 nodes/movement/node = SubResource("AnimationNodeStateMachine_2ijsl")
@@ -288,7 +303,7 @@ nodes/shot/node = SubResource("AnimationNodeAnimation_vfarp")
 nodes/shot/position = Vector2(-140, 280)
 nodes/walking/node = SubResource("AnimationNodeBlendSpace2D_f1ek2")
 nodes/walking/position = Vector2(-1040, 20)
-node_connections = [&"OneShot", 0, &"aim_blend", &"OneShot", 1, &"shot", &"OneShot 2", 0, &"OneShot", &"OneShot 2", 1, &"hurt_two", &"aim_blend", 0, &"movement", &"aim_blend", 1, &"Animation", &"output", 0, &"OneShot 2"]
+node_connections = [&"aim_blend", 0, &"movement", &"aim_blend", 1, &"Animation", &"fire", 0, &"aim_blend", &"fire", 1, &"shot", &"hit", 0, &"fire", &"hit", 1, &"hurt_two", &"output", 0, &"hit"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6t5aa"]
 radius = 0.2
@@ -338,33 +353,33 @@ mesh = SubResource("BoxMesh_v0iea")
 transform = Transform3D(-0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0)
 
 [node name="Skeleton3D" parent="visuals/heavy game animations/Armature" index="0"]
-bones/0/position = Vector3(-0.00611488, 1.757, -0.157685)
-bones/0/rotation = Quaternion(-0.0311155, -0.0775776, -0.00242852, 0.996498)
-bones/1/rotation = Quaternion(0.113096, -0.129713, 0.00671504, 0.985058)
-bones/2/rotation = Quaternion(0.0415591, 0.0292614, 0.0089991, 0.998667)
-bones/3/rotation = Quaternion(0.0258429, 0.160808, -0.0446331, 0.985637)
+bones/0/position = Vector3(-0.0060772, 1.75897, -0.15781)
+bones/0/rotation = Quaternion(-0.0311074, -0.0778578, -0.00243896, 0.996476)
+bones/1/rotation = Quaternion(0.111504, -0.129679, 0.00662263, 0.985244)
+bones/2/rotation = Quaternion(0.0409238, 0.0289927, 0.00923932, 0.998699)
+bones/3/rotation = Quaternion(0.0256401, 0.161145, -0.0448041, 0.98558)
 bones/4/rotation = Quaternion(0.0471029, -2.53801e-10, 1.16826e-08, 0.99889)
-bones/5/position = Vector3(0.172462, 0.463361, -0.0567318)
-bones/5/rotation = Quaternion(-0.0370225, 0.0554336, 0.860064, -0.505813)
-bones/6/rotation = Quaternion(0.397077, -0.10241, -0.490164, 0.769144)
-bones/7/rotation = Quaternion(0.262148, -0.275248, -0.317644, 0.868688)
+bones/5/position = Vector3(0.172463, 0.46337, -0.0566979)
+bones/5/rotation = Quaternion(-0.0370009, 0.0555822, 0.860036, -0.505845)
+bones/6/rotation = Quaternion(0.397295, -0.101918, -0.490374, 0.768962)
+bones/7/rotation = Quaternion(0.262174, -0.275651, -0.31726, 0.868693)
 bones/8/rotation = Quaternion(0.377701, 0.000734726, 0.0169991, 0.925771)
 bones/9/rotation = Quaternion(0.0141464, -0.000132795, 0.0110608, 0.999839)
-bones/10/position = Vector3(-0.172462, 0.46338, -0.0566626)
-bones/10/rotation = Quaternion(0.0381206, -0.096283, 0.839598, 0.533247)
-bones/11/rotation = Quaternion(0.0301537, 0.113085, 0.244761, 0.962494)
-bones/12/rotation = Quaternion(0.745355, -0.189574, 0.19805, 0.607687)
+bones/10/position = Vector3(-0.172463, 0.463371, -0.0566964)
+bones/10/rotation = Quaternion(0.0380087, -0.0961947, 0.839638, 0.533208)
+bones/11/rotation = Quaternion(0.0300642, 0.113351, 0.24484, 0.962445)
+bones/12/rotation = Quaternion(0.745381, -0.189646, 0.197993, 0.607651)
 bones/13/rotation = Quaternion(0.375321, -0.000778585, -0.0169973, 0.926739)
 bones/14/rotation = Quaternion(0.0115771, 0.00010426, -0.0110613, 0.999872)
-bones/15/rotation = Quaternion(0.751508, 0.0361537, -0.651669, 0.0962085)
-bones/16/rotation = Quaternion(0.129635, 0.00216827, -0.213695, 0.968259)
-bones/17/rotation = Quaternion(-0.086599, -0.0923671, 0.730473, 0.671102)
-bones/18/rotation = Quaternion(0.613283, -0.0865982, 0.773023, 0.137184)
-bones/19/rotation = Quaternion(0.123735, -0.00217469, 0.20397, 0.971124)
-bones/20/rotation = Quaternion(-0.066806, 0.0383005, -0.719033, 0.690696)
+bones/15/rotation = Quaternion(0.751453, 0.0371567, -0.652064, 0.093548)
+bones/16/rotation = Quaternion(0.127374, 0.00217078, -0.209968, 0.969373)
+bones/17/rotation = Quaternion(-0.0864328, -0.0932604, 0.728648, 0.672981)
+bones/18/rotation = Quaternion(0.613698, -0.0862507, 0.77311, 0.135042)
+bones/19/rotation = Quaternion(0.120837, -0.00217773, 0.199192, 0.972479)
+bones/20/rotation = Quaternion(-0.0661643, 0.0394311, -0.717308, 0.692486)
 
 [node name="righthand" type="BoneAttachment3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="1"]
-transform = Transform3D(-0.87893, 0.0948793, 0.46742, 0.41523, -0.329956, 0.84777, 0.234664, 0.939216, 0.250611, -0.827593, 2.20738, -0.106577)
+transform = Transform3D(-0.878669, 0.0928231, 0.468322, 0.41773, -0.325501, 0.848263, 0.231178, 0.940974, 0.247233, -0.827862, 2.21075, -0.106784)
 bone_name = "hand.r"
 bone_idx = 14
 
@@ -374,7 +389,7 @@ bone_idx = 14
 transform = Transform3D(0.118526, 0.184833, 0.404213, 0.423308, -0.174484, -0.0443393, 0.135507, 0.383396, -0.215048, 0.0419091, 0.654366, 0.354485)
 
 [node name="lefthand" type="BoneAttachment3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="2"]
-transform = Transform3D(-0.399895, -0.882476, 0.247626, 0.751196, -0.160762, 0.640203, -0.525155, 0.44203, 0.727201, -0.322486, 2.27672, 0.697117)
+transform = Transform3D(-0.398149, -0.883315, 0.247449, 0.749654, -0.15785, 0.64273, -0.528673, 0.441404, 0.725029, -0.324013, 2.28287, 0.696585)
 bone_name = "hand.l"
 bone_idx = 9
 
@@ -383,20 +398,20 @@ bone_idx = 9
 [node name="AnimationTree" type="AnimationTree" parent="visuals/heavy game animations"]
 tree_root = SubResource("AnimationNodeBlendTree_tx1dd")
 anim_player = NodePath("../AnimationPlayer")
-parameters/OneShot/active = false
-parameters/OneShot/internal_active = false
-parameters/OneShot/request = 0
-"parameters/OneShot 2/active" = false
-"parameters/OneShot 2/internal_active" = false
-"parameters/OneShot 2/request" = 0
 parameters/aim_blend/blend_amount = 0.0
 "parameters/crouch walk/blend_position" = Vector2(0, 0)
+parameters/fire/active = false
+parameters/fire/internal_active = false
+parameters/fire/request = 0
+parameters/hit/active = false
+parameters/hit/internal_active = false
+parameters/hit/request = 0
 parameters/movement/crouch/blend_position = Vector2(0, 0)
 parameters/movement/walk/blend_position = Vector2(-0.000881076, 0.00408161)
 parameters/walking/blend_position = Vector2(0.125997, 0.0291971)
 
 [node name="camera_mount" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.26715, 0)
 
 [node name="SpringArm3D" type="SpringArm3D" parent="camera_mount"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.9, -0.7)

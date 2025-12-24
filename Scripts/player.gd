@@ -159,6 +159,9 @@ func _input(event):
 	if event.is_action_released("fire"):
 		firing = false
 	if event.is_action_pressed("aim"):
+		if running:
+			print("attempted aim while running")
+			is_running()
 		aimed = true
 	if event.is_action_released("aim"):
 		aimed = false
@@ -181,9 +184,9 @@ func _input(event):
 		BeginJump()
 		jumping = true
 	if event.is_action_pressed('run'):
-		is_running()
+		start_run = true
 	if event.is_action_released('run'):
-		is_running()
+		start_run = false
 		
 	var sensmulti := 10
 	if aimed:
@@ -266,6 +269,8 @@ func _physics_process(delta: float) -> void:
 	var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
 	if canfire and firing:
 		_firing()
+		
+
 	
 	##+++++++++++++++CAMERA STUFF AND ROTATING VISUALS VVV++++++++++++++++++++
 
@@ -345,8 +350,8 @@ func _physics_process(delta: float) -> void:
 		velocity.y = jumpVelocity
 		jumpQueued = false
 		falling = true
-	
-	currentInput = Input.get_vector("left", "right", "forward", "backward")
+	if is_on_floor():
+		currentInput = Input.get_vector("left", "right", "forward", "backward")
 	var direction := (transform.basis * Vector3(currentInput.x, 0, currentInput.y)).normalized()
 	if direction:
 		velocity.x = direction.x * SPEED
@@ -360,7 +365,7 @@ func _physics_process(delta: float) -> void:
 	#triggered from the running animation. this will help with movement speed being shifted
 	#to running before the player is fully standing, as well as movement speed not shifting
 	#before the walk animation fully transfer to running animation
-	if start_run and !jumping and !aimed and currentInput.y < -0.1 and abs(currentInput.x) < 0.1 and is_on_floor():
+	if start_run and !jumping and currentInput.y < -0.1 and abs(currentInput.x) < 0.1 and is_on_floor():
 		SPEED = running_speed
 		crouched = false
 		running = true
@@ -369,6 +374,15 @@ func _physics_process(delta: float) -> void:
 		SPEED = walking_speed
 		running = false
 		if is_on_floor():
+			playback.travel(walkingStateName)
+	
+	if aimed and is_on_floor():
+		SPEED = aimed_speed
+		running = false
+		start_run = false
+		if crouched:
+			playback.travel(crouchStateName)
+		else:
 			playback.travel(walkingStateName)
 	
 	if !running and !jumping and crouched and is_on_floor():
@@ -381,7 +395,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func is_running():
-	start_run = !start_run
+		start_run = !start_run
 	
 
 func BeginJump():
