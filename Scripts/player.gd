@@ -133,8 +133,10 @@ func _firing():
 	# Convert target_position → direction vector
 	var direction = target_position - gun_muzzle.global_position
 	new_bullet.initialize(gun_muzzle.global_position, direction, 200)
-	await get_tree().create_timer(0.05).timeout
+	await get_tree().create_timer(0.08).timeout
 	canfire = true
+	#replace this with some code that pushes shoulder bones back on each shot 
+	animationTree.set("parameters/fire/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 
 func _on_exited_car():
 	print("make the player cam current")
@@ -369,6 +371,7 @@ func _physics_process(delta: float) -> void:
 		SPEED = running_speed
 		crouched = false
 		running = true
+		aimed = false
 		playback.travel(sprintStateName)
 	elif !crouched and !jumping and !aimed:
 		SPEED = walking_speed
