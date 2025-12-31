@@ -383,11 +383,13 @@ func _physics_process(delta: float) -> void:
 		SPEED = aimed_speed
 		running = false
 		start_run = false
+		animationTree.set("parameters/aim_blend/blend_amount", 1.0)
 		if crouched:
 			playback.travel(crouchStateName)
 		else:
 			playback.travel(walkingStateName)
-	
+	elif !aimed:
+		animationTree.set("parameters/aim_blend/blend_amount", 0.0)
 	if !running and !jumping and crouched and is_on_floor():
 		SPEED = crouch_speed
 		playback.travel(crouchStateName)

@@ -281,7 +281,7 @@ blend_point_4/pos = Vector2(0, 0)
 sync = true
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_tx1dd"]
-graph_offset = Vector2(-511.936, 12.036)
+graph_offset = Vector2(-594.454, 31.816)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_igrcy")
 nodes/Animation/position = Vector2(-540, 260)
 nodes/aim_blend/node = SubResource("AnimationNodeBlend2_vgqql")
@@ -353,33 +353,33 @@ mesh = SubResource("BoxMesh_v0iea")
 transform = Transform3D(-0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0)
 
 [node name="Skeleton3D" parent="visuals/heavy game animations/Armature" index="0"]
-bones/0/position = Vector3(-0.00607129, 1.76249, -0.158001)
-bones/0/rotation = Quaternion(-0.031115, -0.0777946, -0.00243526, 0.996481)
-bones/1/rotation = Quaternion(0.10819, -0.129613, 0.00639608, 0.985624)
-bones/2/rotation = Quaternion(0.0394499, 0.0283569, 0.00979534, 0.998771)
-bones/3/rotation = Quaternion(0.0254412, 0.161465, -0.0447043, 0.985537)
+bones/0/position = Vector3(-0.00608291, 1.76208, -0.157971)
+bones/0/rotation = Quaternion(-0.0311158, -0.0774512, -0.0024246, 0.996508)
+bones/1/rotation = Quaternion(0.108455, -0.129621, 0.00639452, 0.985594)
+bones/2/rotation = Quaternion(0.0396922, 0.028455, 0.0097033, 0.99876)
+bones/3/rotation = Quaternion(0.0256184, 0.160973, -0.0445043, 0.985622)
 bones/4/rotation = Quaternion(0.0471029, -2.53801e-10, 1.16826e-08, 0.99889)
-bones/5/position = Vector3(0.172463, 0.463368, -0.0567054)
-bones/5/rotation = Quaternion(-0.0366619, 0.0558639, 0.860008, -0.505886)
-bones/6/rotation = Quaternion(0.397248, -0.102026, -0.49033, 0.769)
-bones/7/rotation = Quaternion(0.262169, -0.275565, -0.317344, 0.868691)
+bones/5/position = Vector3(0.172461, 0.463357, -0.0567473)
+bones/5/rotation = Quaternion(-0.0366376, 0.0557262, 0.860037, -0.505855)
+bones/6/rotation = Quaternion(0.396976, -0.102627, -0.49006, 0.769233)
+bones/7/rotation = Quaternion(0.262133, -0.275061, -0.317816, 0.868689)
 bones/8/rotation = Quaternion(0.377701, 0.000734726, 0.0169991, 0.925771)
 bones/9/rotation = Quaternion(0.0141464, -0.000132795, 0.0110608, 0.999839)
-bones/10/position = Vector3(-0.172463, 0.463373, -0.0566889)
-bones/10/rotation = Quaternion(0.0379133, -0.0957632, 0.839682, 0.533223)
-bones/11/rotation = Quaternion(0.0300836, 0.113293, 0.244824, 0.962456)
-bones/12/rotation = Quaternion(0.745376, -0.189631, 0.198005, 0.607659)
+bones/10/position = Vector3(-0.172461, 0.463383, -0.0566471)
+bones/10/rotation = Quaternion(0.0380343, -0.0958059, 0.83964, 0.533272)
+bones/11/rotation = Quaternion(0.0301942, 0.112965, 0.244724, 0.962516)
+bones/12/rotation = Quaternion(0.745343, -0.189541, 0.198076, 0.607704)
 bones/13/rotation = Quaternion(0.375321, -0.000778585, -0.0169973, 0.926739)
 bones/14/rotation = Quaternion(0.0115771, 0.00010426, -0.0110613, 0.999872)
-bones/15/rotation = Quaternion(0.75157, 0.038411, -0.652494, 0.0889919)
-bones/16/rotation = Quaternion(0.122211, 0.0021763, -0.201457, 0.971841)
-bones/17/rotation = Quaternion(-0.0851102, -0.0947212, 0.725551, 0.676284)
-bones/18/rotation = Quaternion(0.613702, -0.0867739, 0.773851, 0.130361)
-bones/19/rotation = Quaternion(0.115497, -0.00218314, 0.190389, 0.974889)
-bones/20/rotation = Quaternion(-0.0646116, 0.0411081, -0.71392, 0.696027)
+bones/15/rotation = Quaternion(0.751732, 0.0376944, -0.652168, 0.0903051)
+bones/16/rotation = Quaternion(0.122384, 0.00217612, -0.201743, 0.97176)
+bones/17/rotation = Quaternion(-0.0847692, -0.0944691, 0.726057, 0.675819)
+bones/18/rotation = Quaternion(0.613283, -0.0871839, 0.774067, 0.130782)
+bones/19/rotation = Quaternion(0.116264, -0.00218237, 0.191655, 0.974549)
+bones/20/rotation = Quaternion(-0.0648249, 0.040592, -0.714403, 0.695542)
 
 [node name="righthand" type="BoneAttachment3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="1"]
-transform = Transform3D(-0.877702, 0.0910909, 0.47047, 0.422481, -0.316259, 0.849406, 0.226164, 0.944289, 0.239097, -0.828133, 2.21708, -0.105671)
+transform = Transform3D(-0.877575, 0.0927662, 0.47038, 0.42163, -0.317719, 0.849284, 0.228233, 0.943636, 0.239709, -0.827844, 2.21631, -0.105263)
 bone_name = "hand.r"
 bone_idx = 14
 
@@ -389,7 +389,7 @@ bone_idx = 14
 transform = Transform3D(0.118526, 0.184833, 0.404213, 0.423308, -0.174484, -0.0443393, 0.135507, 0.383396, -0.215048, 0.0419091, 0.654366, 0.354485)
 
 [node name="lefthand" type="BoneAttachment3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="2"]
-transform = Transform3D(-0.395525, -0.884168, 0.248609, 0.745304, -0.150795, 0.649447, -0.536732, 0.442162, 0.718618, -0.324813, 2.29594, 0.697644)
+transform = Transform3D(-0.396472, -0.883543, 0.249323, 0.745387, -0.15127, 0.649242, -0.535918, 0.443248, 0.718556, -0.323223, 2.29461, 0.698383)
 bone_name = "hand.l"
 bone_idx = 9
 
