@@ -95,6 +95,16 @@ var jumping:bool;
 var currentInput: Vector2;
 var currentVelocity: Vector2;
 
+#health and damage
+var health: int = 125; #heavy has more health
+@onready var physicalBoner: PhysicalBoneSimulator3D = $"visuals/heavy game animations/Armature/Skeleton3D/PhysicalBoneSimulator3D"
+
+func ded():
+	physicalBoner.active = true
+	physicalBoner.physical_bones_start_simulation()
+
+
+
 func set_move_state(state_name: String) -> void:
 	move_state_machine.travel(state_name)
 
@@ -170,7 +180,8 @@ func _input(event):
 	if event.is_action_released("aim"):
 		aimed = false
 	if event.is_action_pressed("reload"):
-		pass
+		health -= 30
+		print(health)
 	if event.is_action_pressed("crouch") and !running:
 		crouched = !crouched
 		#set reload to true and call the reload fucntion elswhere 
@@ -270,6 +281,9 @@ var was_on_floor: bool = false
 var jump_queued := false
 var jump_delay := 0.30  # seconds before actual takeoff
 func _physics_process(delta: float) -> void:
+	if health < 1:
+		ded()
+
 	var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
 	if canfire and firing:
 		_firing()
