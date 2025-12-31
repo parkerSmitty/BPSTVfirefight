@@ -73,6 +73,7 @@ var BULLET_SCENE = load("res://Scenes/bullet.tscn")
 #character visuals and such
 @onready var move_state_machine: AnimationNodeStateMachinePlayback = $"visuals/heavy game animations/AnimationTree".get("parameters/movement/playback")
 @onready var heavy_visuals: AnimationTree = $"visuals/heavy game animations/AnimationTree"
+@onready var ik_anim: AnimationPlayer = $"visuals/heavy game animations/Armature/Skeleton3D/IkAnim"
 
 #movement
 var jumpQueued: bool;
@@ -136,7 +137,8 @@ func _firing():
 	await get_tree().create_timer(0.08).timeout
 	canfire = true
 	#replace this with some code that pushes shoulder bones back on each shot 
-	animationTree.set("parameters/fire/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+	#animationTree.set("parameters/fire/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+	#ik_anim.play("fire")
 
 func _on_exited_car():
 	print("make the player cam current")

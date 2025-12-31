@@ -1,4 +1,4 @@
-[gd_scene load_steps=70 format=3 uid="uid://l1ceeh6o3xf"]
+[gd_scene load_steps=73 format=3 uid="uid://l1ceeh6o3xf"]
 
 [ext_resource type="Script" uid="uid://bdnhe7ub4767j" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="Script" uid="uid://wmc3jchvr21c" path="res://Scenes/PlayerInventory.gd" id="3_vgqql"]
@@ -10,6 +10,67 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_v0iea"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_v0iea"]
+
+[sub_resource type="Animation" id="Animation_fkybt"]
+resource_name = "fire"
+length = 0.067
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("rightArm:influence")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.0666667),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("leftArm:influence")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.0666636),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_x3wgy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("rightArm:influence")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("leftArm:influence")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3smsa"]
+_data = {
+&"RESET": SubResource("Animation_x3wgy"),
+&"fire": SubResource("Animation_fkybt")
+}
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_igrcy"]
 animation = &"heavy_aim"
@@ -241,7 +302,7 @@ states/heavy_stand/position = Vector2(429.297, -51.2179)
 states/walk/node = SubResource("AnimationNodeBlendSpace2D_wpjfl")
 states/walk/position = Vector2(381, 91)
 transitions = ["Start", "walk", SubResource("AnimationNodeStateMachineTransition_bi64h"), "walk", "heavy_jump", SubResource("AnimationNodeStateMachineTransition_0gysh"), "heavy_jump", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_vfarp"), "Heavy_falling", "heavy_landing", SubResource("AnimationNodeStateMachineTransition_y6uwr"), "heavy_landing", "walk", SubResource("AnimationNodeStateMachineTransition_83xs0"), "walk", "heavy_run", SubResource("AnimationNodeStateMachineTransition_8gxox"), "heavy_run", "heavy_jump", SubResource("AnimationNodeStateMachineTransition_11gg7"), "walk", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_qpa8y"), "heavy_run", "Heavy_falling", SubResource("AnimationNodeStateMachineTransition_sbwqj"), "heavy_run", "walk", SubResource("AnimationNodeStateMachineTransition_xwi16"), "walk", "heavy_crouch", SubResource("AnimationNodeStateMachineTransition_sweqm"), "heavy_crouch", "crouch", SubResource("AnimationNodeStateMachineTransition_ph33w"), "crouch", "heavy_stand", SubResource("AnimationNodeStateMachineTransition_7ldla"), "heavy_stand", "walk", SubResource("AnimationNodeStateMachineTransition_r7t2e"), "heavy_run", "crouch", SubResource("AnimationNodeStateMachineTransition_vgqql"), "heavy_landing", "heavy_run", SubResource("AnimationNodeStateMachineTransition_fkybt")]
-graph_offset = Vector2(-152.703, 114.257)
+graph_offset = Vector2(-13.703, 59.257)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vfarp"]
 animation = &"heavyfire"
@@ -281,7 +342,7 @@ blend_point_4/pos = Vector2(0, 0)
 sync = true
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_tx1dd"]
-graph_offset = Vector2(-594.454, 31.816)
+graph_offset = Vector2(-909, 37)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_igrcy")
 nodes/Animation/position = Vector2(-540, 260)
 nodes/aim_blend/node = SubResource("AnimationNodeBlend2_vgqql")
@@ -353,33 +414,33 @@ mesh = SubResource("BoxMesh_v0iea")
 transform = Transform3D(-0.5, 0, -4.37114e-08, 0, 0.5, 0, 4.37114e-08, 0, -0.5, 0, 0, 0)
 
 [node name="Skeleton3D" parent="visuals/heavy game animations/Armature" index="0"]
-bones/0/position = Vector3(-0.00608291, 1.76208, -0.157971)
-bones/0/rotation = Quaternion(-0.0311158, -0.0774512, -0.0024246, 0.996508)
-bones/1/rotation = Quaternion(0.108455, -0.129621, 0.00639452, 0.985594)
-bones/2/rotation = Quaternion(0.0396922, 0.028455, 0.0097033, 0.99876)
-bones/3/rotation = Quaternion(0.0256184, 0.160973, -0.0445043, 0.985622)
+bones/0/position = Vector3(-0.00610253, 1.75682, -0.15768)
+bones/0/rotation = Quaternion(-0.0310187, -0.0774436, -0.00245497, 0.996511)
+bones/1/rotation = Quaternion(0.113435, -0.129723, 0.00671819, 0.985018)
+bones/2/rotation = Quaternion(0.0417577, 0.0293406, 0.00892353, 0.998657)
+bones/3/rotation = Quaternion(0.0258209, 0.160193, -0.044588, 0.98574)
 bones/4/rotation = Quaternion(0.0471029, -2.53801e-10, 1.16826e-08, 0.99889)
-bones/5/position = Vector3(0.172461, 0.463357, -0.0567473)
-bones/5/rotation = Quaternion(-0.0366376, 0.0557262, 0.860037, -0.505855)
-bones/6/rotation = Quaternion(0.396976, -0.102627, -0.49006, 0.769233)
-bones/7/rotation = Quaternion(0.262133, -0.275061, -0.317816, 0.868689)
+bones/5/position = Vector3(0.172461, 0.463356, -0.0567542)
+bones/5/rotation = Quaternion(-0.0370429, 0.0553291, 0.860082, -0.505791)
+bones/6/rotation = Quaternion(0.396929, -0.102726, -0.490012, 0.769275)
+bones/7/rotation = Quaternion(0.262125, -0.274975, -0.317893, 0.86869)
 bones/8/rotation = Quaternion(0.377701, 0.000734726, 0.0169991, 0.925771)
 bones/9/rotation = Quaternion(0.0141464, -0.000132795, 0.0110608, 0.999839)
-bones/10/position = Vector3(-0.172461, 0.463383, -0.0566471)
-bones/10/rotation = Quaternion(0.0380343, -0.0958059, 0.83964, 0.533272)
-bones/11/rotation = Quaternion(0.0301942, 0.112965, 0.244724, 0.962516)
-bones/12/rotation = Quaternion(0.745343, -0.189541, 0.198076, 0.607704)
+bones/10/position = Vector3(-0.172461, 0.463385, -0.0566402)
+bones/10/rotation = Quaternion(0.0381972, -0.0963497, 0.83957, 0.533273)
+bones/11/rotation = Quaternion(0.0302128, 0.11291, 0.244706, 0.962527)
+bones/12/rotation = Quaternion(0.745337, -0.189526, 0.198088, 0.607711)
 bones/13/rotation = Quaternion(0.375321, -0.000778585, -0.0169973, 0.926739)
 bones/14/rotation = Quaternion(0.0115771, 0.00010426, -0.0110613, 0.999872)
-bones/15/rotation = Quaternion(0.751732, 0.0376944, -0.652168, 0.0903051)
-bones/16/rotation = Quaternion(0.122384, 0.00217612, -0.201743, 0.97176)
-bones/17/rotation = Quaternion(-0.0847692, -0.0944691, 0.726057, 0.675819)
-bones/18/rotation = Quaternion(0.613283, -0.0871839, 0.774067, 0.130782)
-bones/19/rotation = Quaternion(0.116264, -0.00218237, 0.191655, 0.974549)
-bones/20/rotation = Quaternion(-0.0648249, 0.040592, -0.714403, 0.695542)
+bones/15/rotation = Quaternion(0.751652, 0.0357533, -0.651428, 0.0968636)
+bones/16/rotation = Quaternion(0.129471, 0.00216845, -0.213426, 0.96834)
+bones/17/rotation = Quaternion(-0.0864378, -0.0923377, 0.730542, 0.671052)
+bones/18/rotation = Quaternion(0.613168, -0.0866489, 0.773032, 0.137618)
+bones/19/rotation = Quaternion(0.1245, -0.00217388, 0.20523, 0.97076)
+bones/20/rotation = Quaternion(-0.0672589, 0.0381056, -0.719113, 0.69058)
 
 [node name="righthand" type="BoneAttachment3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="1"]
-transform = Transform3D(-0.877575, 0.0927662, 0.47038, 0.42163, -0.317719, 0.849284, 0.228233, 0.943636, 0.239709, -0.827844, 2.21631, -0.105263)
+transform = Transform3D(-0.878915, 0.0957469, 0.467271, 0.414481, -0.33148, 0.847542, 0.23604, 0.938591, 0.251657, -0.827383, 2.2069, -0.106485)
 bone_name = "hand.r"
 bone_idx = 14
 
@@ -389,11 +450,35 @@ bone_idx = 14
 transform = Transform3D(0.118526, 0.184833, 0.404213, 0.423308, -0.174484, -0.0443393, 0.135507, 0.383396, -0.215048, 0.0419091, 0.654366, 0.354485)
 
 [node name="lefthand" type="BoneAttachment3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="2"]
-transform = Transform3D(-0.396472, -0.883543, 0.249323, 0.745387, -0.15127, 0.649242, -0.535918, 0.443248, 0.718556, -0.323223, 2.29461, 0.698383)
+transform = Transform3D(-0.400465, -0.882151, 0.247864, 0.751597, -0.1615, 0.639547, -0.524147, 0.44241, 0.727697, -0.321622, 2.27532, 0.697461)
 bone_name = "hand.l"
 bone_idx = 9
 
 [node name="containerL" type="Node3D" parent="visuals/heavy game animations/Armature/Skeleton3D/lefthand"]
+
+[node name="rightArm" type="SkeletonIK3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.783284, 2.53473, -0.62668)
+influence = 0.0
+root_bone = &"Shoulder.r"
+tip_bone = &"hand.r"
+target_node = NodePath("../targetRight")
+
+[node name="leftArm" type="SkeletonIK3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.210945, 2.36561, 0.498016)
+root_bone = &"Shoulder.l"
+tip_bone = &"hand.l"
+target_node = NodePath("../targetLeft")
+
+[node name="targetLeft" type="Marker3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="5"]
+transform = Transform3D(-0.310045, -0.916915, 0.251275, 0.770407, -0.0874382, 0.631529, -0.557087, 0.389386, 0.733507, -0.347538, 2.33009, 0.633404)
+
+[node name="targetRight" type="Marker3D" parent="visuals/heavy game animations/Armature/Skeleton3D" index="6"]
+transform = Transform3D(-0.878575, 0.106904, 0.465487, 0.410246, -0.330125, 0.850127, 0.244551, 0.937864, 0.246183, -0.843967, 2.27996, -0.229716)
+
+[node name="IkAnim" type="AnimationPlayer" parent="visuals/heavy game animations/Armature/Skeleton3D" index="7"]
+libraries = {
+&"": SubResource("AnimationLibrary_3smsa")
+}
 
 [node name="AnimationTree" type="AnimationTree" parent="visuals/heavy game animations"]
 tree_root = SubResource("AnimationNodeBlendTree_tx1dd")
