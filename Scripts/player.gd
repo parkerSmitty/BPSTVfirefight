@@ -74,6 +74,7 @@ var BULLET_SCENE = load("res://Scenes/bullet.tscn")
 @onready var move_state_machine: AnimationNodeStateMachinePlayback = $"visuals/heavy game animations/AnimationTree".get("parameters/movement/playback")
 @onready var heavy_visuals: AnimationTree = $"visuals/heavy game animations/AnimationTree"
 @onready var ik_anim: AnimationPlayer = $"visuals/heavy game animations/Armature/Skeleton3D/IkAnim"
+@onready var skeleton_3d: Skeleton3D = $"visuals/heavy game animations/Armature/Skeleton3D"
 
 #movement
 var jumpQueued: bool;
@@ -98,10 +99,24 @@ var currentVelocity: Vector2;
 #health and damage
 var health: int = 125; #heavy has more health
 @onready var physicalBoner: PhysicalBoneSimulator3D = $"visuals/heavy game animations/Armature/Skeleton3D/PhysicalBoneSimulator3D"
+var is_dead := false
+
 
 func ded():
+	if is_dead:
+		return
+	
+	is_dead = true
+	animationTree.active = false
+	heavy_visuals.active = false
 	physicalBoner.active = true
+	skeleton_3d.clear_bones_global_pose_override()
+	skeleton_3d.reset_bone_poses()
 	physicalBoner.physical_bones_start_simulation()
+	# Stop player movement
+	#velocity = Vector3.ZERO
+	#set_physics_process(false)
+	
 
 
 
@@ -280,138 +295,152 @@ var crouch_blend := Vector2.ZERO
 var was_on_floor: bool = false
 var jump_queued := false
 var jump_delay := 0.30  # seconds before actual takeoff
+#variable used in physics process
+
+#PHYSICS PROCESSS YEEEEEHAW!!!!
+####PHYSICS PROCESSS YEEEEEHAW ####PHYSICS PROCESSS YEEEEEHAW
+####PHYSICS PROCESSS YEEEEEHAW ####PHYSICS PROCESSS YEEEEEHAW
+####PHYSICS PROCESSS YEEEEEHAW ####PHYSICS PROCESSS YEEEEEHAW
+####PHYSICS PROCESSS YEEEEEHAW ####PHYSICS PROCESSS YEEEEEHAW
+####PHYSICS PROCESSS YEEEEEHAW ####PHYSICS PROCESSS YEEEEEHAW
+####PHYSICS PROCESSS YEEEEEHAW ####PHYSICS PROCESSS YEEEEEHAW
 func _physics_process(delta: float) -> void:
+	#if is_dead:
+	#	return
+	
 	if health < 1:
 		ded()
-
-	var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
-	if canfire and firing:
-		_firing()
+		return
 		
-
-	
-	##+++++++++++++++CAMERA STUFF AND ROTATING VISUALS VVV++++++++++++++++++++
-
-	var visual_dir = Vector3(currentInput.x,0, currentInput.y).normalized()
-	var current_rot = visuals.global_rotation
-	var target_y = camera.global_rotation.y
-	var fov_speed = 6.0
-	var target_fov
-	if aimed:
-		target_fov = aim_fov
-	elif running:
-		target_fov = run_fov
 	else:
-		target_fov = def_fov
-	
-	camera.fov = lerp(camera.fov, target_fov, clamp(delta * fov_speed,0,1))
-	
-	cam_spring.add_excluded_object(self)
-	
-	if camera.current: # figure this shit out inorder to hide crosshair in car 
-		crosshair.is_visible_in_tree()
-	if !camera.current:
-		pass
-	if lean_left != previous_leaned:
-		if lean_left:
-			leanLeft()
-			lean_left = previous_leaned
-	if lean_right != previous_leaned:
-		if lean_right:
-			leanRight()
-			lean_right = previous_leaned
-	
-	var target: Vector3
-	if aimed:
-		if base_cam_current == base_cam_posR:
-			target = aim_cam_posR
+		var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+		if canfire and firing:
+			_firing()
+			
+
+		
+		##+++++++++++++++CAMERA STUFF AND ROTATING VISUALS VVV++++++++++++++++++++
+
+		var visual_dir = Vector3(currentInput.x,0, currentInput.y).normalized()
+		var current_rot = visuals.global_rotation
+		var target_y = camera.global_rotation.y
+		var fov_speed = 6.0
+		var target_fov
+		if aimed:
+			target_fov = aim_fov
+		elif running:
+			target_fov = run_fov
 		else:
-			target = aim_cam_posL
-	else:
-		target = base_cam_current
-	cam_spring.position = cam_spring.position.lerp(target,0.09)
-	
-		#rotating visuals 
-	current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
-	visuals.global_rotation = current_rot
-	if aimed or firing:
+			target_fov = def_fov
+		
+		camera.fov = lerp(camera.fov, target_fov, clamp(delta * fov_speed,0,1))
+		
+		cam_spring.add_excluded_object(self)
+		
+		if camera.current: # figure this shit out inorder to hide crosshair in car 
+			crosshair.is_visible_in_tree()
+		if !camera.current:
+			pass
+		if lean_left != previous_leaned:
+			if lean_left:
+				leanLeft()
+				lean_left = previous_leaned
+		if lean_right != previous_leaned:
+			if lean_right:
+				leanRight()
+				lean_right = previous_leaned
+		
+		var target: Vector3
+		if aimed:
+			if base_cam_current == base_cam_posR:
+				target = aim_cam_posR
+			else:
+				target = aim_cam_posL
+		else:
+			target = base_cam_current
+		cam_spring.position = cam_spring.position.lerp(target,0.09)
+		
+			#rotating visuals 
 		current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
 		visuals.global_rotation = current_rot
-	
-		#if !aimed and !firing: 
-			#visuals.rotation.y = lerp_angle(visuals.rotation.y,atan2(-visual_dir.x, -visual_dir.z), delta * SMOOTH_SPEED)
-		#change this back to having the character look the direction theyre walking. ^^^^^
-		#perhaps add some smoothing so they flow into direction changes or something idk.
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
-	
-	##++++++++++++++++++CAMERA STUFF AND ROTATING VISUALS ^^^^+++++++++++++++++++++++++
-	##====================PLAYER MOVEMENT AND ANIMATION VVV=======================
-	
-	if !is_on_floor():
-		velocity.y -= gravity * delta
-		jumpQueued = false
-		jumping = true
-		if !falling:
-			falling = true
-			#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
-			playback.travel(fallingStateName)
-	else: if falling:
-		falling = false
-		#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
-		playback.travel(walkingStateName)
-		jumping = false
-		crouched = false
-	
-	if jumpQueued:
-		velocity.y = jumpVelocity
-		jumpQueued = false
-		falling = true
-	if is_on_floor():
-		currentInput = Input.get_vector("left", "right", "forward", "backward")
-	var direction := (transform.basis * Vector3(currentInput.x, 0, currentInput.y)).normalized()
-	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
-	else:
-		velocity.x = move_toward(velocity.x,0,SPEED)
-		velocity.z = move_toward(velocity.z,0,SPEED)
-	
-	#running with a check for jumping to overrider
-	#maybe move all these checks to input and change this to a function that is 
-	#triggered from the running animation. this will help with movement speed being shifted
-	#to running before the player is fully standing, as well as movement speed not shifting
-	#before the walk animation fully transfer to running animation
-	if start_run and !jumping and currentInput.y < -0.1 and abs(currentInput.x) < 0.1 and is_on_floor():
-		SPEED = running_speed
-		crouched = false
-		running = true
-		aimed = false
-		playback.travel(sprintStateName)
-	elif !crouched and !jumping and !aimed:
-		SPEED = walking_speed
-		running = false
-		if is_on_floor():
-			playback.travel(walkingStateName)
-	
-	if aimed and is_on_floor():
-		SPEED = aimed_speed
-		running = false
-		start_run = false
-		animationTree.set("parameters/aim_blend/blend_amount", 1.0)
-		if crouched:
-			playback.travel(crouchStateName)
-		else:
-			playback.travel(walkingStateName)
-	elif !aimed:
-		animationTree.set("parameters/aim_blend/blend_amount", 0.0)
-	if !running and !jumping and crouched and is_on_floor():
-		SPEED = crouch_speed
-		playback.travel(crouchStateName)
-		#animationTree.set(crouchBlendPath, currentVelocity) 
+		if aimed or firing:
+			current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
+			visuals.global_rotation = current_rot
 		
-		#want to use crouch blendspace here
+			#if !aimed and !firing: 
+				#visuals.rotation.y = lerp_angle(visuals.rotation.y,atan2(-visual_dir.x, -visual_dir.z), delta * SMOOTH_SPEED)
+			#change this back to having the character look the direction theyre walking. ^^^^^
+			#perhaps add some smoothing so they flow into direction changes or something idk.
+		else:
+			velocity.x = move_toward(velocity.x, 0, SPEED)
+			velocity.z = move_toward(velocity.z, 0, SPEED)
+		
+		##++++++++++++++++++CAMERA STUFF AND ROTATING VISUALS ^^^^+++++++++++++++++++++++++
+		##====================PLAYER MOVEMENT AND ANIMATION VVV=======================
+		
+		if !is_on_floor():
+			velocity.y -= gravity * delta
+			jumpQueued = false
+			jumping = true
+			if !falling:
+				falling = true
+				#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+				playback.travel(fallingStateName)
+		else: if falling:
+			falling = false
+			#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+			playback.travel(walkingStateName)
+			jumping = false
+			crouched = false
+		
+		if jumpQueued:
+			velocity.y = jumpVelocity
+			jumpQueued = false
+			falling = true
+		if is_on_floor():
+			currentInput = Input.get_vector("left", "right", "forward", "backward")
+		var direction := (transform.basis * Vector3(currentInput.x, 0, currentInput.y)).normalized()
+		if direction:
+			velocity.x = direction.x * SPEED
+			velocity.z = direction.z * SPEED
+		else:
+			velocity.x = move_toward(velocity.x,0,SPEED)
+			velocity.z = move_toward(velocity.z,0,SPEED)
+		
+		#running with a check for jumping to overrider
+		#maybe move all these checks to input and change this to a function that is 
+		#triggered from the running animation. this will help with movement speed being shifted
+		#to running before the player is fully standing, as well as movement speed not shifting
+		#before the walk animation fully transfer to running animation
+		if start_run and !jumping and currentInput.y < -0.1 and abs(currentInput.x) < 0.1 and is_on_floor():
+			SPEED = running_speed
+			crouched = false
+			running = true
+			aimed = false
+			playback.travel(sprintStateName)
+		elif !crouched and !jumping and !aimed:
+			SPEED = walking_speed
+			running = false
+			if is_on_floor():
+				playback.travel(walkingStateName)
+		
+		if aimed and is_on_floor():
+			SPEED = aimed_speed
+			running = false
+			start_run = false
+			animationTree.set("parameters/aim_blend/blend_amount", 1.0)
+			if crouched:
+				playback.travel(crouchStateName)
+			else:
+				playback.travel(walkingStateName)
+		elif !aimed:
+			animationTree.set("parameters/aim_blend/blend_amount", 0.0)
+		if !running and !jumping and crouched and is_on_floor():
+			SPEED = crouch_speed
+			playback.travel(crouchStateName)
+			#animationTree.set(crouchBlendPath, currentVelocity) 
+			
+			#want to use crouch blendspace here
 	
 	move_and_slide()
 
