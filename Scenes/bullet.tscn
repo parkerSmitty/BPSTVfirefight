@@ -22,9 +22,10 @@ initial_velocity_max = -2.72
 size = Vector3(0.02, 0.02, 0.02)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xjght"]
+albedo_color = Color(0.895182, 0.766533, 7.70092e-07, 1)
 emission_enabled = true
-emission = Color(0.876906, 0.0593062, 0.0346461, 1)
-emission_energy_multiplier = 10.0
+emission = Color(0.970404, 0.678683, 2.69532e-06, 1)
+emission_energy_multiplier = 2.0
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_xjght"]
 material = SubResource("StandardMaterial3D_xjght")
@@ -40,7 +41,6 @@ script = ExtResource("1_oduel")
 target_position = Vector3(0, 0, -1)
 
 [node name="Lightdisk" type="MeshInstance3D" parent="."]
-visible = false
 material_override = ExtResource("2_oduel")
 mesh = SubResource("QuadMesh_6afsh")
 skeleton = NodePath("../MeshInstance3D")

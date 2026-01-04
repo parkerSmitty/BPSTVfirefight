@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://6rkdjrito7pv"]
+[gd_scene load_steps=13 format=3 uid="uid://6rkdjrito7pv"]
 
 [ext_resource type="Script" uid="uid://cqgoinsbwplp2" path="res://Scripts/world.gd" id="1_fo5ed"]
 [ext_resource type="Texture2D" uid="uid://rpn12jgw0lym" path="res://Textures/cabin.png" id="1_go701"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://ctgkokatj7ys8" path="res://Scenes/Raycast_Car.tscn" id="6_5ukr8"]
 [ext_resource type="PackedScene" uid="uid://cweae40dah6op" path="res://Scenes/fightEntrance.tscn" id="8_5v1tr"]
 [ext_resource type="PackedScene" uid="uid://l1ceeh6o3xf" path="res://Scenes/player.tscn" id="8_k7acu"]
-[ext_resource type="PackedScene" uid="uid://bple4gg04xqgo" path="res://Items/AmmoPickup.tscn" id="9_5v1tr"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8j60k"]
 albedo_texture = ExtResource("1_go701")
@@ -113,11 +112,6 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 4, 
 
 [node name="Car2" parent="." instance=ExtResource("6_5ukr8")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -5, 4, 7)
-
-[node name="Area3D" parent="." instance=ExtResource("9_5v1tr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.98889, -2.93457)
-ammo_type = "9mm"
-amount = 20
 
 [node name="Node3D" parent="." instance=ExtResource("8_5v1tr")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -17.416, 0, 0)

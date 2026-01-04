@@ -74,7 +74,7 @@ var BULLET_SCENE = load("res://Scenes/bullet.tscn")
 @onready var move_state_machine: AnimationNodeStateMachinePlayback = $"visuals/heavy game animations/AnimationTree".get("parameters/movement/playback")
 #@onready var heavy_visuals: AnimationTree = $"visuals/heavy game animations/AnimationTree"
 @onready var ik_anim: AnimationPlayer = $"visuals/heavy game animations/Armature/Skeleton3D/IkAnim"
-@onready var skeleton_3d: Skeleton3D = $"visuals/heavy game animations/Armature/Skeleton3D"
+@onready var animated_skeleton: Skeleton3D = $"visuals/heavy game animations/Armature/Skeleton3D"
 
 #movement
 var jumpQueued: bool;
@@ -97,31 +97,69 @@ var currentInput: Vector2;
 var currentVelocity: Vector2;
 
 #health and damage
-var health: int = 125; #heavy has more health
+var health: int = 125; #heavy has more health e
+@onready var skeleton_3d: Skeleton3D = $"visuals/heavy game animations/Armature/Skeleton3D"
+@onready var physical_bone_simulator_3d: PhysicalBoneSimulator3D = $visuals/ragdoll/Armature/ragdoll_skeleton/PhysicalBoneSimulator3D
 @onready var physicalBoner: PhysicalBoneSimulator3D = $"visuals/heavy game animations/Armature/Skeleton3D/PhysicalBoneSimulator3D"
 var is_dead := false
+@onready var armature: Node3D = $"visuals/heavy game animations/Armature"
+@onready var rag_doll_skel: Skeleton3D = $Ragdoll/ragdollanim/Armature/ragDollSkel
+@onready var rag_doll_physical: PhysicalBoneSimulator3D = $Ragdoll/ragdollanim/Armature/ragDollSkel/PhysicalBoneSimulator3D
+@onready var ragdoll: Node3D = $Ragdoll
 
-
-
+#does this save?
+# What you should do now (recommended)
+#Even though it saved, do not ignore this.
+#Immediate mitigation
+#Restart Godot
+#Open the scene
+#Save immediately
+#If no error → good
+#If error returns → isolate node (below)
+#How to isolate the offending node
+#Do this once, it is fast:
+#Duplicate the scene
+#In the duplicate:
+#Disable AnimationTree
+#Disable SkeletonIK3D
+#Disable ragdoll / PhysicalBones
+#Save
+#If clean → re-enable one system at a time, saving after each.
+#The one that re-triggers the error is your culprit.
 func ded():
+
 	if is_dead:
 		return
 	print("should print once to show its dead")
 	is_dead = true
-	##animationTree.ANIMATION_PROCESS_MANUAL
-	animationTree.active = false
-	animationTree.process_mode = Node.PROCESS_MODE_DISABLED
-	animationTree.set_physics_process(false)
-	animationTree.set_process(false)
-	#heavy_visuals.active = false
-	move_state_machine.stop()
 	
-	physicalBoner.active = true
-	skeleton_3d.clear_bones_global_pose_override()
-	skeleton_3d.reset_bone_poses()
-	physicalBoner.physical_bones_start_simulation()
-	print(animationTree.is_active())
-	print("animation tree process mode", animationTree.can_process())
+	armature.visible = false
+	ragdoll.visible = true
+	
+	for i in skeleton_3d.get_bone_count():
+		var bone_name := skeleton_3d.get_bone_name(i)
+		var rag_doll_skel_idx := rag_doll_skel.find_bone(bone_name)
+		if rag_doll_skel_idx == -1:
+			continue
+		
+		var pose := skeleton_3d.get_bone_pose(i)
+		rag_doll_skel.set_bone_pose(rag_doll_skel_idx, pose)
+	
+	rag_doll_skel.force_update_all_bone_transforms()
+	#
+	rag_doll_physical.physical_bones_start_simulation()
+	rag_doll_physical.active = true
+	#
+	await get_tree().physics_frame
+	for child in rag_doll_physical.get_children():
+		if child is PhysicalBone3D:
+			
+			child.can_sleep = false
+			child.linear_velocity = Vector3.ZERO
+			child.angular_velocity = Vector3.ZERO
+	#
+
+	
 	# Disable animation on individual bones
 	#skeleton_3d.clear_bones_global_pose_override()
 	#for bone in skeleton_3d.get_children():
@@ -152,10 +190,8 @@ func _process(delta):
 	currentVelocity += newDelta;
 	if !is_dead:
 		if crouched:
-			print("here 3")
 			animationTree.set(crouchBlendPath, currentVelocity) 
 		else:
-			print("here 4")
 			animationTree.set(walkingBlendPath, currentVelocity)
 	
 
@@ -209,13 +245,12 @@ func _input(event):
 		firing = false
 	if event.is_action_pressed("aim"):
 		if running:
-			print("attempted aim while running")
 			is_running()
 		aimed = true
 	if event.is_action_released("aim"):
 		aimed = false
 	if event.is_action_pressed("reload"):
-		health -= 30
+		health -= 200
 		print(health)
 	if event.is_action_pressed("crouch") and !running:
 		crouched = !crouched
@@ -328,18 +363,16 @@ func _physics_process(delta: float) -> void:
 	#print("is animation tree active: ",animationTree.is_active())
 	#print("what is the process mode of the animation tree", animationTree.process_mode)
 	if is_dead:
-		print("already dead")
+		#print("already dead")
 		return
 	if health < 1:
 		#figure out how to disable playback my suspection, playback is causing ragdoll issue by attempting 
 		#to start animation every frame of ragdoll, look if theres a way to completely
 		#disable normal skeletion
 		ded()
-		print("dead")
 		return
 		
 	elif !is_dead:
-		print("alive")
 		var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
 		if canfire and firing:
 			_firing()
@@ -413,12 +446,10 @@ func _physics_process(delta: float) -> void:
 				falling = true
 				#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
 				playback.travel(fallingStateName)
-				print("is this being called after death?")
 		else: if falling:
 			falling = false
 			#var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
 			playback.travel(walkingStateName)
-			print("is this being called after death?")
 			jumping = false
 			crouched = false
 		
@@ -451,30 +482,24 @@ func _physics_process(delta: float) -> void:
 			SPEED = walking_speed
 			running = false
 			if is_on_floor():
-				print("is this being called after death?")
 				playback.travel(walkingStateName)
 		
 		if aimed and is_on_floor():
 			SPEED = aimed_speed
 			running = false
 			start_run = false
-			print("here 1")
 			animationTree.set("parameters/aim_blend/blend_amount", 1.0)
 			if crouched:
 				playback.travel(crouchStateName)
 			else:
 				playback.travel(walkingStateName)
 		elif !aimed:
-			print("here 2")
 			animationTree.set("parameters/aim_blend/blend_amount", 0.0)
 		if !running and !jumping and crouched and is_on_floor():
 			SPEED = crouch_speed
-			print("is this being called after death?")
 			playback.travel(crouchStateName)
 			#animationTree.set(crouchBlendPath, currentVelocity) 
-		print("PLAYBACK aka animationnodestatemachine: ", playback)
 			#want to use crouch blendspace here
-	print("this shit still being called?")
 	#print("HEAVEY VIS aka animplayer: ", heavy_visuals)
 	
 	move_and_slide()
