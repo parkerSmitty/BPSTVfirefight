@@ -77,6 +77,14 @@ var BULLET_SCENE = load("res://Scenes/bullet.tscn")
 @onready var animated_skeleton: Skeleton3D = $"visuals/heavy game animations/Armature/Skeleton3D"
 
 #movement
+const LOOK_BONES :Dictionary[StringName, float]= {
+	"Spine2": 0.3,
+	"Spine3": 0.3,
+	"Neck":   0.2
+}
+@onready var left_arm: SkeletonIK3D = $"visuals/heavy game animations/Armature/Skeleton3D/leftArm"
+@onready var right_arm: SkeletonIK3D = $"visuals/heavy game animations/Armature/Skeleton3D/rightArm"
+@onready var bending: SkeletonIK3D = $"visuals/heavy game animations/Armature/Skeleton3D/Bending"
 var jumpQueued: bool;
 var falling: bool;
 var jumping:bool;
@@ -136,6 +144,7 @@ func ded():
 	armature.visible = false
 	ragdoll.visible = true
 	
+	#sets pose to animated pose
 	for i in skeleton_3d.get_bone_count():
 		var bone_name := skeleton_3d.get_bone_name(i)
 		var rag_doll_skel_idx := rag_doll_skel.find_bone(bone_name)
@@ -149,15 +158,18 @@ func ded():
 	#
 	rag_doll_physical.physical_bones_start_simulation()
 	rag_doll_physical.active = true
-	#
+	
+	var direction := (transform.basis * Vector3(currentInput.x, 0, currentInput.y)).normalized()
+	
 	await get_tree().physics_frame
 	for child in rag_doll_physical.get_children():
 		if child is PhysicalBone3D:
 			
+			#replace with force from killing object
 			child.can_sleep = false
-			child.linear_velocity = Vector3.ZERO
-			child.angular_velocity = Vector3.ZERO
-	#
+			child.linear_velocity = direction * 3
+			child.angular_velocity = Vector3(0,0,0)
+	
 
 	
 	# Disable animation on individual bones
@@ -193,7 +205,7 @@ func _process(delta):
 			animationTree.set(crouchBlendPath, currentVelocity) 
 		else:
 			animationTree.set(walkingBlendPath, currentVelocity)
-	
+
 
 func _firing():
 	#below is a working state, above is a slightly different implementation to reslvoe snaping issue
@@ -226,6 +238,12 @@ func _on_exited_car():
 	$camera_mount/SpringArm3D/Camera3D.make_current()
 
 func _ready():
+	#FIX IK FOR HANDS FUUUUUUUUCK
+	bending.start()
+	bending.influence = 0.8
+	right_arm.start()
+	left_arm.start()
+	skeleton_3d.reset_bone_poses()
 	#heavy_visuals.active = true
 	
 	for car in get_parent().get_children():
@@ -286,7 +304,7 @@ func _input(event):
 		rot.x = clamp(rot.x, deg_to_rad(-60), deg_to_rad(60))
 		camera_mount.rotation = rot
 		
-		#camera_mount.rotation_degrees.x = clamp(camera_mount.rotation_degrees.x, rad_to_deg(min_pitch),rad_to_deg(max_pitch))
+		#apply_look_pitch(camera_mount.rotation.x)
 
 func camera_target():
 	var ray_origin = camera.global_transform.origin
@@ -374,6 +392,11 @@ func _physics_process(delta: float) -> void:
 		
 	elif !is_dead:
 		var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
+		
+
+		#IK movement 
+		#bending.start()
+		
 		if canfire and firing:
 			_firing()
 			
@@ -500,6 +523,7 @@ func _physics_process(delta: float) -> void:
 			playback.travel(crouchStateName)
 			#animationTree.set(crouchBlendPath, currentVelocity) 
 			#want to use crouch blendspace here
+		
 	#print("HEAVEY VIS aka animplayer: ", heavy_visuals)
 	
 	move_and_slide()
