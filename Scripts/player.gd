@@ -241,8 +241,8 @@ func _ready():
 	#FIX IK FOR HANDS FUUUUUUUUCK
 	bending.start()
 	bending.influence = 0.8
-	right_arm.start()
-	left_arm.start()
+	#right_arm.start()
+	#left_arm.start()
 	skeleton_3d.reset_bone_poses()
 	#heavy_visuals.active = true
 	
@@ -506,18 +506,25 @@ func _physics_process(delta: float) -> void:
 			running = false
 			if is_on_floor():
 				playback.travel(walkingStateName)
+		var aim_blend := 0.0
+		const AIM_LERP_SPEED := 1.0
+		
+		var target_aim_blend := 1.0 if aimed else 0.0
+		
+		aim_blend = lerp(aim_blend, target_aim_blend, AIM_LERP_SPEED * delta)
+		animationTree.set("parameters/aim_blend/blend_amount", aim_blend)
 		
 		if aimed and is_on_floor():
 			SPEED = aimed_speed
 			running = false
 			start_run = false
-			animationTree.set("parameters/aim_blend/blend_amount", 1.0)
+			#animationTree.set("parameters/aim_blend/blend_amount", 1.0)
 			if crouched:
 				playback.travel(crouchStateName)
 			else:
 				playback.travel(walkingStateName)
-		elif !aimed:
-			animationTree.set("parameters/aim_blend/blend_amount", 0.0)
+		#elif !aimed:
+			#animationTree.set("parameters/aim_blend/blend_amount", 0.0)
 		if !running and !jumping and crouched and is_on_floor():
 			SPEED = crouch_speed
 			playback.travel(crouchStateName)
