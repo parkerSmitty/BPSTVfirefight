@@ -5,6 +5,7 @@ extends CharacterBody3D
 #@onready var inventory_node: Inventory = $InventoryNode
 @onready var player_inventory: PlayerInventory = $Node
 var equipped_weapon: Node = null
+@onready var spring_arm_3d: SpringArm3D = $camera_mount/SpringArm3D
 
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -26,6 +27,7 @@ var crouched := false
 @export var max_pitch := deg_to_rad(-60)
 
 #aimming and cam stuff
+
 var lean_right := false
 var lean_left := false
 var run_cam_posR = Vector3(1.0, 0.9,0.0)
@@ -77,13 +79,13 @@ var BULLET_SCENE = load("res://Scenes/bullet.tscn")
 @onready var animated_skeleton: Skeleton3D = $"visuals/heavy game animations/Armature/Skeleton3D"
 
 #movement
-const LOOK_BONES :Dictionary[StringName, float]= {
-	"Spine2": 0.3,
-	"Spine3": 0.3,
-	"Neck":   0.2
-}
+#hand IK
 @onready var left_arm: SkeletonIK3D = $"visuals/heavy game animations/Armature/Skeleton3D/leftArm"
 @onready var right_arm: SkeletonIK3D = $"visuals/heavy game animations/Armature/Skeleton3D/rightArm"
+@onready var target_left: Marker3D = $"visuals/heavy game animations/Armature/Skeleton3D/targetLeft"
+@onready var target_right: Marker3D = $"visuals/heavy game animations/Armature/Skeleton3D/targetRight"
+#spine IK
+@onready var bending_target: Marker3D = $camera_mount/bending_target
 @onready var bending: SkeletonIK3D = $"visuals/heavy game animations/Armature/Skeleton3D/Bending"
 var jumpQueued: bool;
 var falling: bool;
@@ -115,25 +117,18 @@ var is_dead := false
 @onready var rag_doll_physical: PhysicalBoneSimulator3D = $Ragdoll/ragdollanim/Armature/ragDollSkel/PhysicalBoneSimulator3D
 @onready var ragdoll: Node3D = $Ragdoll
 
-#does this save?
-# What you should do now (recommended)
-#Even though it saved, do not ignore this.
-#Immediate mitigation
-#Restart Godot
-#Open the scene
-#Save immediately
-#If no error → good
-#If error returns → isolate node (below)
-#How to isolate the offending node
-#Do this once, it is fast:
-#Duplicate the scene
-#In the duplicate:
-#Disable AnimationTree
-#Disable SkeletonIK3D
-#Disable ragdoll / PhysicalBones
-#Save
-#If clean → re-enable one system at a time, saving after each.
-#The one that re-triggers the error is your culprit.
+#recoil
+# Right hand recoil
+var recoil_offset_r := Vector3.ZERO
+var recoil_velocity_r := Vector3.ZERO
+
+# Left hand recoil
+var recoil_offset_l := Vector3.ZERO
+var recoil_velocity_l := Vector3.ZERO
+
+@export var recoil_return := 25.0
+
+
 func ded():
 
 	if is_dead:
@@ -195,6 +190,9 @@ func reload():
 	print("reload")
 
 func _process(delta):
+	
+	#spring_arm_3d.global_transform.origin = spring_arm_3d.global_transform.origin.lerp(camera_mount.global_transform.origin, speed * delta)
+	
 	var newDelta = currentInput - currentVelocity;
 	if (newDelta.length() > transitionSpeed * delta):
 		newDelta = newDelta.normalized() * transitionSpeed * delta;
@@ -213,8 +211,8 @@ func _firing():
 	#UPDATE THIS WHEN VISUALS ARE IN TO USE THE GUN TO AIM DIRECTION 
 	#and the BULLET ONLY FLIES IN STRIAGHT LINE WHEREVER GUN IS AIMED.
 	canfire = false
-	if !gun_anim.is_playing():
-		gun_anim.play("shoot")
+	#if !gun_anim.is_playing():
+	#	gun_anim.play("shoot")
 	var new_bullet:bullet = BULLET_SCENE.instantiate()
 	get_tree().current_scene.add_child(new_bullet)
 	#-gun_muzzle.global_basis.z
@@ -227,6 +225,7 @@ func _firing():
 	# Convert target_position → direction vector
 	var direction = target_position - gun_muzzle.global_position
 	new_bullet.initialize(gun_muzzle.global_position, direction, 200)
+	apply_shot_recoil()
 	await get_tree().create_timer(0.08).timeout
 	canfire = true
 	#replace this with some code that pushes shoulder bones back on each shot 
@@ -241,6 +240,8 @@ func _ready():
 	#FIX IK FOR HANDS FUUUUUUUUCK
 	bending.start()
 	bending.influence = 0.8
+	right_arm.start()
+	left_arm.start()
 	#right_arm.start()
 	#left_arm.start()
 	skeleton_3d.reset_bone_poses()
@@ -362,6 +363,12 @@ func leanLeft():
 	if !aimed:
 		base_cam_current = base_cam_posL
 
+func apply_shot_recoil():
+	# RIGHT HAND
+	recoil_velocity_r += Vector3(-0.08,-0.5,0.08)
+	# LEFT HAND
+	recoil_velocity_l += Vector3(0.1,0.2,-0.4)
+
 
 var walk_blend := Vector2.ZERO
 var crouch_blend := Vector2.ZERO
@@ -369,7 +376,6 @@ var was_on_floor: bool = false
 var jump_queued := false
 var jump_delay := 0.30  # seconds before actual takeoff
 #variable used in physics process
-
 #PHYSICS PROCESSS YEEEEEHAW!!!!
 ####PHYSICS PROCESSS YEEEEEHAW ####PHYSICS PROCESSS YEEEEEHAW
 ####PHYSICS PROCESSS YEEEEEHAW ####PHYSICS PROCESSS YEEEEEHAW
@@ -391,19 +397,51 @@ func _physics_process(delta: float) -> void:
 		return
 		
 	elif !is_dead:
+		#bending_target.rotation.y = -180.0#attempt to lock bending only to x axis
+		#bending_target.rotation.z = 0.0
 		var playback = animationTree.get(locomotionStatePlaybackPath) as AnimationNodeStateMachinePlayback;
 		
-
-		#IK movement 
-		#bending.start()
-		
+			# ---- LEFT HAND ----
+		var idx := skeleton_3d.find_bone("hand.l")
+		if idx != -1:
+			var bone_poseL := skeleton_3d.get_bone_global_pose(idx)
+			var baseL := skeleton_3d.global_transform * bone_poseL
+			# update recoil (spring)
+			recoil_velocity_l = recoil_velocity_l.lerp(Vector3.ZERO, recoil_return * delta)
+			recoil_offset_l += recoil_velocity_l
+			recoil_offset_l = recoil_offset_l.lerp(Vector3.ZERO, recoil_return * delta)
+			# apply recoil in bone space
+			baseL.origin += baseL.basis * recoil_offset_l
+			target_left.global_transform = baseL
+	# ---- RIGHT HAND ----
+		var idy := skeleton_3d.find_bone("hand.r")
+		if idy != -1:
+			var bone_poseR := skeleton_3d.get_bone_global_pose(idy)
+			var baseR := skeleton_3d.global_transform * bone_poseR
+			recoil_velocity_r = recoil_velocity_r.lerp(Vector3.ZERO, recoil_return * delta)
+			recoil_offset_r += recoil_velocity_r
+			recoil_offset_r = recoil_offset_r.lerp(Vector3.ZERO, recoil_return * delta)
+			baseR.origin += baseR.basis * recoil_offset_r
+			target_right.global_transform = baseR
+			
+		#var idx = skeleton_3d.find_bone("hand.l")
+		#var bone_poseL = skeleton_3d.get_bone_global_pose(idx)
+		#var world_poseL = skeleton_3d.global_transform * bone_poseL
+		#target_left.global_transform = world_poseL
+		#var idy = skeleton_3d.find_bone("hand.r")
+		#var bone_poseR = skeleton_3d.get_bone_global_pose(idy)
+		#var world_poseR = skeleton_3d.global_transform * bone_poseR
+		#target_right.global_transform = world_poseR
+		#target_right.shot_recoil()
+		#target_left.shot_recoil()
 		if canfire and firing:
 			_firing()
 			
 		
 		
 		##+++++++++++++++CAMERA STUFF AND ROTATING VISUALS VVV++++++++++++++++++++
-		
+		var IKbase_influence = 0.8
+		var IKno_influence = 0.0
 		var visual_dir = Vector3(currentInput.x,0, currentInput.y).normalized()
 		var current_rot = visuals.global_rotation
 		var target_y = camera.global_rotation.y
@@ -444,19 +482,20 @@ func _physics_process(delta: float) -> void:
 		cam_spring.position = cam_spring.position.lerp(target,0.09)
 		
 			#rotating visuals 
-		current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
+		
+		current_rot.y = lerp_angle(current_rot.y, target_y, delta * 20.0)
 		visuals.global_rotation = current_rot
-		if aimed or firing:
-			current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
-			visuals.global_rotation = current_rot
+		#if aimed or firing:
+		#	current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
+		#	visuals.global_rotation = current_rot
 		
 			#if !aimed and !firing: 
 				#visuals.rotation.y = lerp_angle(visuals.rotation.y,atan2(-visual_dir.x, -visual_dir.z), delta * SMOOTH_SPEED)
 			#change this back to having the character look the direction theyre walking. ^^^^^
 			#perhaps add some smoothing so they flow into direction changes or something idk.
-		else:
-			velocity.x = move_toward(velocity.x, 0, SPEED)
-			velocity.z = move_toward(velocity.z, 0, SPEED)
+		
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
 		
 		##++++++++++++++++++CAMERA STUFF AND ROTATING VISUALS ^^^^+++++++++++++++++++++++++
 		##====================PLAYER MOVEMENT AND ANIMATION VVV=======================
@@ -507,7 +546,7 @@ func _physics_process(delta: float) -> void:
 			if is_on_floor():
 				playback.travel(walkingStateName)
 		var aim_blend := 0.0
-		const AIM_LERP_SPEED := 1.0
+		const AIM_LERP_SPEED := 4.0
 		
 		var target_aim_blend := 1.0 if aimed else 0.0
 		
@@ -523,15 +562,10 @@ func _physics_process(delta: float) -> void:
 				playback.travel(crouchStateName)
 			else:
 				playback.travel(walkingStateName)
-		#elif !aimed:
-			#animationTree.set("parameters/aim_blend/blend_amount", 0.0)
 		if !running and !jumping and crouched and is_on_floor():
 			SPEED = crouch_speed
 			playback.travel(crouchStateName)
-			#animationTree.set(crouchBlendPath, currentVelocity) 
-			#want to use crouch blendspace here
-		
-	#print("HEAVEY VIS aka animplayer: ", heavy_visuals)
+
 	
 	move_and_slide()
 
