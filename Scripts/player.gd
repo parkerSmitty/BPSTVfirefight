@@ -126,6 +126,8 @@ var recoil_velocity_r := Vector3.ZERO
 var recoil_offset_l := Vector3.ZERO
 var recoil_velocity_l := Vector3.ZERO
 
+
+
 @export var recoil_return := 25.0
 
 
@@ -226,7 +228,7 @@ func _firing():
 	var direction = target_position - gun_muzzle.global_position
 	new_bullet.initialize(gun_muzzle.global_position, direction, 200)
 	apply_shot_recoil()
-	await get_tree().create_timer(0.08).timeout
+	await get_tree().create_timer(0.1).timeout
 	canfire = true
 	#replace this with some code that pushes shoulder bones back on each shot 
 	#animationTree.set("parameters/fire/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
@@ -370,6 +372,7 @@ func apply_shot_recoil():
 	recoil_velocity_l += Vector3(0.1,0.2,-0.4)
 
 
+var stomp_blend := 0.0
 var walk_blend := Vector2.ZERO
 var crouch_blend := Vector2.ZERO
 var was_on_floor: bool = false
@@ -483,8 +486,16 @@ func _physics_process(delta: float) -> void:
 		
 			#rotating visuals 
 		
-		current_rot.y = lerp_angle(current_rot.y, target_y, delta * 20.0)
+		current_rot.y = lerp_angle(current_rot.y, target_y, delta * 50)
 		visuals.global_rotation = current_rot
+		
+		var diff : float = abs(angle_difference(visuals.global_rotation.y, target_y))
+		var target_blend : float = clamp(diff * 10.0, 0.0, 0.5)
+
+		var response_speed := 18.0
+		stomp_blend += (target_blend - stomp_blend) * (1.0 - exp(-response_speed * delta))
+		if is_on_floor():
+			animationTree.set("parameters/stomp/blend_amount", stomp_blend)
 		#if aimed or firing:
 		#	current_rot.y = lerp_angle(current_rot.y, target_y, delta * 8.0)
 		#	visuals.global_rotation = current_rot
