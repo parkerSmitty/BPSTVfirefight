@@ -218,15 +218,22 @@ func _firing():
 	var new_bullet:bullet = BULLET_SCENE.instantiate()
 	get_tree().current_scene.add_child(new_bullet)
 	#-gun_muzzle.global_basis.z
-	var hit = camera_target()
-	var target_position: Vector3
-	if hit:
-		target_position = hit.position
-	else:
-		target_position = camera.global_position + (-camera.global_transform.basis.z) * 2000.0
+	##var hit = camera_target()
+	var aim_point: Vector3 = camera_target()
+	#var target_position: Vector3
+	#if hit:
+	#	target_position = hit.position
+	#else:
+	#	target_position = camera.global_position + (-camera.global_transform.basis.z) * 2000.0
 	# Convert target_position → direction vector
-	var direction = target_position - gun_muzzle.global_position
-	new_bullet.initialize(gun_muzzle.global_position, direction, 200)
+	##var direction = hit - gun_muzzle.global_position
+	var weapon_origin: Vector3 = gun_muzzle.global_position
+	var aim_dir: Vector3 =(aim_point - weapon_origin).normalized()
+	var forward: Vector3 = -global_transform.basis.z
+	if aim_dir.dot(forward) < 0.3:
+		aim_dir = forward
+	new_bullet.initialize(weapon_origin, aim_dir, 200)
+	##new_bullet.initialize(gun_muzzle.global_position, direction, 200)
 	apply_shot_recoil()
 	await get_tree().create_timer(0.1).timeout
 	canfire = true
@@ -313,12 +320,23 @@ func camera_target():
 	var ray_origin = camera.global_transform.origin
 	var ray_dir = -camera.global_transform.basis.z.normalized()
 	var ray_end = ray_origin + ray_dir * 1000.0
-
+	#var origin_tracker = MeshInstance3D.new()
+	#var box_mesh := BoxMesh.new()
+	#box_mesh.size = Vector3(0.5,0.5,0.5)
+	#origin_tracker.mesh
+	#origin_tracker.mesh=box_mesh
+	#get_tree().current_scene.add_child(origin_tracker)
+	#origin_tracker.global_position = ray_origin
+	
 	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
 	query.exclude = [self.get_rid()]
 	query.collision_mask = 1
-
-	return get_world_3d().direct_space_state.intersect_ray(query)
+	var hit = get_world_3d().direct_space_state.intersect_ray(query)
+	if hit:
+		return hit.position
+	else:
+		return ray_end
+	
 
 #INTERACT FUNCTION
 func cast_ray_from_camera():
