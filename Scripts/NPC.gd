@@ -1,15 +1,10 @@
 extends CharacterBody3D
 
-var move_dir := Vector3.ZERO
-var look_target:= Vector3.ZERO
-var wants_jump: bool = false
-var wants_shoot: bool = false
+#the NPC will decide between defending an area, attacking an area, retreating, or entering a vehicle
+#if it sees a player with its vision cone, it will 
+#1: fight (crouching, straifing, or standing still)  (chance to throw gernade)
+#2: chance to run away or charge (if low heath)
+# after the player is dead, or ai has safely escaped, it will return to the begining of its decision
+#life cycle and continue on from there 
 
-
-enum States {DEFEND,ATTACK,CAPTURE, RETREAT}
-var state = States.DEFEND
-
-
-
-func _physics_process(delta: float) -> void:
-	pass
+enum State {ATTACK, DEFEND, RETREAT, VEHIC}
