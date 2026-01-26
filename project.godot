@@ -24,6 +24,8 @@ window/stretch/mode="canvas_items"
 
 player="all players will be in this group"
 vehicles="all vehicles are in this group"
+damageable=""
+headbone=""
 
 [input]
 

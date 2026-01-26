@@ -9,7 +9,7 @@ var shot_direction: Vector3 = Vector3.ZERO
 @onready var raycast: RayCast3D = $RayCast3D
 @onready var mesh: MeshInstance3D = $MeshInstance3D
 @onready var particles: GPUParticles3D = $GPUParticles3D
-
+var damage = 30
 func _ready() -> void:
 	pass
 
@@ -40,9 +40,25 @@ func _physics_process(delta: float) -> void:
 		var collision_normal = raycast.get_collision_normal()
 		var collider = raycast.get_collider()
 		global_position = collision_point
+		var damageable = find_enemy_root(raycast.get_collider())
+		if damageable != null:
+			print(raycast.get_collider())
+			print(collider.name)
+			if collider.is_in_group("headbone"):
+				print("headshot") #headshots dont work rn, fix em later
+				damageable.hit(damage*2)
+			else:
+				damageable.hit(damage)
 		queue_free()
 		return
 	global_position += bullet_velocity * delta
+
+func find_enemy_root(node):
+	while node != null:
+		if node.is_in_group("damageable") and node.has_method("hit"):
+			return node
+		node = node.get_parent()
+	return null
 #everything below is an older implementation. trying something new above 
 #@export var speed := 350
 #@export var damage = 50

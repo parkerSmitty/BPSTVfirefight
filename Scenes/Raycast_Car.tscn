@@ -87,7 +87,7 @@ orientation = 1
 [sub_resource type="BoxShape3D" id="BoxShape3D_7bly4"]
 size = Vector3(3.72, 0.969983, 3.275)
 
-[node name="Car" type="RigidBody3D" node_paths=PackedStringArray("wheels", "skid_marks") groups=["vehicles"]]
+[node name="Car" type="RigidBody3D" node_paths=PackedStringArray("wheels", "skid_marks") groups=["damageable", "vehicles"]]
 collision_mask = 15
 mass = 50.0
 linear_damp_mode = 1

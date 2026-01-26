@@ -330,7 +330,7 @@ func camera_target():
 	
 	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
 	query.exclude = [self.get_rid()]
-	query.collision_mask = 1
+	#query.collision_mask = 1
 	var hit = get_world_3d().direct_space_state.intersect_ray(query)
 	if hit:
 		return hit.position
