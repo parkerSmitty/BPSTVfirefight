@@ -10,7 +10,7 @@ extends CharacterBody3D
 #DEFEND, patrtol area
 #RETREAT, go towards friendly controlpoint
 #VEHIC, get in vehicle 
-
+#NPC will have a chance to attack after it has defended for a set period
 #states
 enum States {ATTACK, DEFEND, RETREAT,FIGHT, VEHIC}
 var state: States = States.DEFEND
@@ -110,13 +110,18 @@ func _on_state_entered(new_state: States):
 			print("car vroom vro")
 			
 func _on_defend():
-	if defending:
+	if defending: 
 		return
 	defending = true
-	
-	while defending:
+	var origin_point: Vector3 = global_position
+	while defending: #have npc patrol a local area 
 		print("Defending")
-		await get_tree().create_timer(8.0).timeout
+		var local_defence = global_position + Vector3(randf_range(-10,10),0,randf_range(-10,10))
+		set_movement_target(local_defence)
+		await get_tree().create_timer(randf_range(4,10)).timeout 
+		var new_org = origin_point + Vector3(randf_range(-5,5),0,randf_range(-5,5))
+		set_movement_target(new_org)
+		await get_tree().create_timer(randf_range(4,10)).timeout 
 	#set_movement_target()
 func _on_attack():
 	if attacking:
