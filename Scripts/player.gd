@@ -132,40 +132,61 @@ var recoil_velocity_l := Vector3.ZERO
 
 
 func ded():
-
 	if is_dead:
 		return
 	print("should print once to show its dead")
 	is_dead = true
 	
-	armature.visible = false
-	ragdoll.visible = true
-	
-	#sets pose to animated pose
-	for i in skeleton_3d.get_bone_count():
+	for i in range(skeleton_3d.get_bone_count()):
 		var bone_name := skeleton_3d.get_bone_name(i)
-		var rag_doll_skel_idx := rag_doll_skel.find_bone(bone_name)
-		if rag_doll_skel_idx == -1:
+		var rag_idx := rag_doll_skel.find_bone(bone_name)
+		if rag_idx == -1:
 			continue
 		
-		var pose := skeleton_3d.get_bone_pose(i)
-		rag_doll_skel.set_bone_pose(rag_doll_skel_idx, pose)
-	
+		var global_pose := skeleton_3d.get_bone_global_pose(i)
+		
+		rag_doll_skel.set_bone_global_pose_override(rag_idx,global_pose,1.0,false)
 	rag_doll_skel.force_update_all_bone_transforms()
-	#
-	rag_doll_physical.physical_bones_start_simulation()
-	rag_doll_physical.active = true
-	
-	var direction := (transform.basis * Vector3(currentInput.x, 0, currentInput.y)).normalized()
 	
 	await get_tree().physics_frame
-	for child in rag_doll_physical.get_children():
-		if child is PhysicalBone3D:
-			
-			#replace with force from killing object
-			child.can_sleep = false
-			child.linear_velocity = direction * 3
-			child.angular_velocity = Vector3(0,0,0)
+	
+	rag_doll_physical.physical_bones_start_simulation()
+	rag_doll_physical.active = true
+	armature.visible = false
+	ragdoll.visible = true
+	await get_tree().physics_frame
+	rag_doll_skel.clear_bones_global_pose_override()
+#	
+#	
+#	#sets pose to animated pose
+#	for i in range(skeleton_3d.get_bone_count()):
+#		var bone_name := skeleton_3d.get_bone_name(i)
+#		var rag_doll_skel_idx := rag_doll_skel.find_bone(bone_name)
+#		if rag_doll_skel_idx == -1:
+#			continue
+#		print("bone name: ",bone_name)
+#		print("bone id: ",rag_doll_skel_idx)
+#		print("ragdoll bone name: ",rag_doll_skel.get_bone_name(i))
+#		#var pose := skeleton_3d.get_bone_pose(i)
+#		#rag_doll_skel.set_bone_pose(rag_doll_skel_idx, pose)
+#		var global_pose := skeleton_3d.get_bone_global_pose(i)
+#		rag_doll_skel.set_bone_global_pose(rag_doll_skel_idx,global_pose)
+#	
+#	rag_doll_skel.force_update_all_bone_transforms()
+#	await get_tree().physics_frame
+#	rag_doll_physical.physical_bones_start_simulation()
+#	rag_doll_physical.active = true
+#	
+#	var direction := (transform.basis * Vector3(currentInput.x, 0, currentInput.y)).normalized()
+#	armature.visible = false
+#	ragdoll.visible = true
+#	for child in rag_doll_physical.get_children():
+#		if child is PhysicalBone3D:
+#			
+#			#replace with force from killing object
+#			child.can_sleep = false
+#			child.linear_velocity = direction * 3
+#			child.angular_velocity = Vector3(0,0,0)
 	
 
 	

@@ -26,6 +26,8 @@ player="all players will be in this group"
 vehicles="all vehicles are in this group"
 damageable=""
 headbone=""
+entity="combatants that can enteract with env (NPC and players)"
+HQ="Capture point"
 
 [input]
 

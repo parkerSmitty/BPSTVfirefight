@@ -40,11 +40,15 @@ var is_dead := false
 @onready var rag_doll_skel: Skeleton3D = $Ragdoll/ragdollanim/Armature/ragDollSkel
 @onready var rag_doll_physical: PhysicalBoneSimulator3D = $Ragdoll/ragdollanim/Armature/ragDollSkel/PhysicalBoneSimulator3D
 @onready var ragdoll: Node3D = $Ragdoll
+@onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
 #health and ragdoll
 
+#Team logic
+@export var team: String
+
 func _decide_next_state(): #changing states now works, actually program state dependent behavior now
-	if health <= 15:
-		state = States.RETREAT
+	if health < 100:
+		state = States.ATTACK
 func _on_player_detected():
 	_decide_next_state()
 
@@ -108,39 +112,60 @@ func _on_state_entered(new_state: States):
 			_on_fight()
 		States.VEHIC:
 			print("car vroom vro")
-			
+
+
 func _on_defend():
 	if defending: 
 		return
 	defending = true
 	var origin_point: Vector3 = global_position
 	while defending: #have npc patrol a local area 
-		print("Defending")
-		var local_defence = global_position + Vector3(randf_range(-10,10),0,randf_range(-10,10))
-		set_movement_target(local_defence)
-		await get_tree().create_timer(randf_range(4,10)).timeout 
-		var new_org = origin_point + Vector3(randf_range(-5,5),0,randf_range(-5,5))
+		var new_org = origin_point + Vector3(randf_range(-15,15),0,randf_range(-15,15))
 		set_movement_target(new_org)
-		await get_tree().create_timer(randf_range(4,10)).timeout 
-	#set_movement_target()
+		print("movement point set: ", new_org, "\n current state: ", state)
+		while not agent.is_navigation_finished():
+			await get_tree().process_frame
+		await get_tree().create_timer(randf_range(0,8)).timeout 
+
+
+
 func _on_attack():
 	if attacking:
 		return
-	
 	attacking = true
 	
+	#getting closest enemy controlled HQ
+	var hqs := get_tree().get_nodes_in_group("HQ")
+	if hqs.is_empty():
+		state = States.DEFEND
+	var closest_hq: Node3D = null
+	var closest_dist = 1000000000000
+	##ADD CHECK TO MAKE SURE HQ IS NOT FRIENDLY! check HQ team against own team.
+	for hq in hqs:
+		var dist := global_position.distance_squared_to(hq.global_position)
+		if dist < closest_dist:
+			closest_dist = dist
+			closest_hq = hq
+	var attack_point: Vector3 = closest_hq.global_position + Vector3(randf_range(1.5,2),0,randf_range(1.5,2))
+	
 	while attacking:
-		print("attacking")
+		set_movement_target(attack_point)
+		print("movement point set: ", attack_point, "\n current state: ", state)
+		while not agent.is_navigation_finished():
+			await get_tree().process_frame
 		await get_tree().create_timer(8.0).timeout
+
+
 func _on_fight():
 	if fighting:
 		return
-	
 	fighting = true
 	
 	while fighting:
-		print("fighting")
+		
 		await get_tree().create_timer(8.0).timeout
+
+
 func _on_retreat():
 	if retreating:
 		return
@@ -172,15 +197,15 @@ func death(): #remeber to disable capsule collision when they die, fix this late
 		if rag_doll_skel_idx == -1:
 			continue
 		
-		var pose := skeleton_3d.get_bone_pose(i)
-		rag_doll_skel.set_bone_pose(rag_doll_skel_idx, pose)
+		#var pose := skeleton_3d.get_bone_pose(i)
+		#rag_doll_skel.set_bone_pose(rag_doll_skel_idx, pose)
+		var global_pose := skeleton_3d.get_bone_global_pose(i)
+		rag_doll_skel.set_bone_global_pose(rag_doll_skel_idx,global_pose)
 	
 	rag_doll_skel.force_update_all_bone_transforms()
 	#
 	rag_doll_physical.physical_bones_start_simulation()
 	rag_doll_physical.active = true
-	
-	
 	await get_tree().physics_frame
 	for child in rag_doll_physical.get_children():
 		if child is PhysicalBone3D:
